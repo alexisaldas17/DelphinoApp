@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "851524056487",
+    "project_id": "delphinoapp",
+    "storage_bucket": "delphinoapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851524056487:android:5e010dd223ddf885b43282",
+        "android_client_info": {
+          "package_name": "com.example.delphino_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851524056487-fdd9ghch63hjmp6k97ct8ou94vb9tvog.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.delphino_app",
+            "certificate_hash": "219e521787289d5ee07cae297ad123d07453368a"
+          }
+        },
+        {
+          "client_id": "851524056487-7laiml0cfvvu5qdkmlvakcpnp0ak0fqq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCE2p4SxrAxYa6BwfDIlxpq6Z0MvOWAZ3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851524056487-7laiml0cfvvu5qdkmlvakcpnp0ak0fqq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
