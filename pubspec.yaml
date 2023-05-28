@@ -43,6 +43,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^2.3.0
+
+flutter_native_splash:
+  color: "#f5cb42"
+  image: assets/splash.jpg
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -58,6 +63,9 @@ dev_dependencies:
 flutter:
   assets:
    - assets/google_logo.png
+   - assets/splash.jpg
+   - assets/facebook_logo.png
+   - assets/apple_iphone.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
