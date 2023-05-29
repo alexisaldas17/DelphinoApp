@@ -2,8 +2,18 @@ import 'package:delphino_app/screens/pantallas/screen_one.dart';
 import 'package:delphino_app/screens/pantallas/screen_two.dart';
 import 'package:flutter/material.dart';
 
-
 class HomePage extends StatefulWidget {
+  final String uid;
+  final String email;
+  final String? displayName;
+  final String photoURL;
+
+  const HomePage({
+    required this.uid,
+    required this.email,
+    required this.displayName,
+    required this.photoURL,
+  });
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -18,12 +28,10 @@ class _HomePageState extends State<HomePage> {
     ScreenFour(),
     ScreenFive(),
   ];
-  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -56,10 +64,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+  
     );
   }
 }
-
 
 // class ScreenTwo extends StatelessWidget {
 //   @override

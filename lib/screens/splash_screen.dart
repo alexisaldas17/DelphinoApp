@@ -1,4 +1,5 @@
 import 'package:delphino_app/screens/auth_screens/login_screen.dart';
+import 'package:delphino_app/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -12,7 +13,7 @@ class SplashScreen extends StatelessWidget {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => LoginPage(),
+          builder: (BuildContext context) => WelcomePage(),
         ),
       );
     });

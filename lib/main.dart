@@ -1,3 +1,4 @@
+import 'package:delphino_app/screens/auth_screens/registro_screen.dart';
 import 'package:delphino_app/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:  SplashScreen(),
+      home:  LoginPage(),
     );
   }
 }

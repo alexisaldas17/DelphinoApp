@@ -19,6 +19,17 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // final TextEditingController _emailController = TextEditingController();
   // final TextEditingController _passwordController = TextEditingController();
+  late GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _email = '';
+  String _password = '';
+  String _errorMessage = '';
+  bool _isLoading = false;
+
+  String uid = '';
+  String? email = '';
+  String? displayName; // Add displayName variable
+  String photoURL = '';
+
   final AuthService authService = AuthService();
   late FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -26,29 +37,50 @@ class _LoginPageState extends State<LoginPage> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
-  void _handleSignIn() async {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+  void _signIn() async {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      setState(() {
+        _errorMessage = '';
+        _isLoading = true;
+      });
 
-    // Validar que los campos de correo electrónico y contraseña no estén vacíos
-    if (email.isNotEmpty && password.isNotEmpty) {
-      UserCredential? userCredential =
-          await authService.signIn(email, password);
+      _formKey.currentState!.save();
 
-      // ignore: unnecessary_null_comparison
-      if (userCredential != null) {
-        // El inicio de sesión fue exitoso, redireccionar a la siguiente pantalla
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        // El inicio de sesión falló, mostrar mensaje de error
+      try {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: _email,
+          password: _password,
+        );
+
+        // Aquí puedes realizar acciones después de iniciar sesión correctamente, como navegar a otra página.
+        if (userCredential.user != null) {
+          User user = userCredential.user!;
+          uid = user.uid;
+          email = user.email;
+          displayName = user.displayName; // Assign the displayName
+          photoURL = user.photoURL ?? '';
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePage(
+                    uid: uid,
+                    email: email!,
+                    displayName: displayName,
+                    photoURL: photoURL)),
+          );
+        }
+      } catch (error) {
+        setState(() {
+          _errorMessage = error.toString();
+        });
         showDialog(
           context: context,
-          builder: (context) {
+          builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Error'),
-              content:
-                  Text('Inicio de sesión fallido. Verifica tus credenciales.'),
-              actions: [
+              title: Text('Error de inicio de sesión'),
+              content: Text('El correo o la contraseña son incorrectos.'),
+              actions: <Widget>[
                 TextButton(
                   child: Text('OK'),
                   onPressed: () {
@@ -59,13 +91,55 @@ class _LoginPageState extends State<LoginPage> {
             );
           },
         );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
 
+  // void _handleSignIn() async {
+  //   String email = _emailController.text.trim();
+  //   String password = _passwordController.text.trim();
+
+  //   // Validar que los campos de correo electrónico y contraseña no estén vacíos
+  //   if (email.isNotEmpty && password.isNotEmpty) {
+  //     UserCredential? userCredential =
+  //         await authService.signIn(email, password);
+
+  //     // ignore: unnecessary_null_comparison
+  //     if (userCredential != null) {
+  //       // El inicio de sesión fue exitoso, redireccionar a la siguiente pantalla
+  //       Navigator.pushReplacementNamed(context, '/home');
+  //     } else {
+  //       // El inicio de sesión falló, mostrar mensaje de error
+  //       showDialog(
+  //         context: context,
+  //         builder: (context) {
+  //           return AlertDialog(
+  //             title: Text('Error'),
+  //             content:
+  //                 Text('Inicio de sesión fallido. Verifica tus credenciales.'),
+  //             actions: [
+  //               TextButton(
+  //                 child: Text('OK'),
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     }
+  //   }
+  // }
+
   @override
   void initState() {
     super.initState();
+    _formKey = GlobalKey<FormState>();
     Firebase.initializeApp().then((value) {
       setState(() {
         _auth = FirebaseAuth.instance;
@@ -113,40 +187,62 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             /////TEXTFORMFIELD CORREO/////
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-                border: Border.all(color: Colors.grey),
-              ),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Correo',
-                  prefixIcon: Icon(Icons.email),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(16.0),
-                ),
-              ),
-            ),
-            SizedBox(height: 16.0),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Correo',
+                        prefixIcon: Icon(Icons.email),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(16.0),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Por favor, ingresa un correo electrónico';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) => _email = value!,
+                    ),
+                  ),
+                  SizedBox(height: 16.0),
 
-            /////TEXTFORMFIELD CONTRASEÑA/////
+                  /////TEXTFORMFIELD CONTRASEÑA/////
 
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-                border: Border.all(color: Colors.grey),
-              ),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Contraseña',
-                  prefixIcon: Icon(Icons.lock),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(16.0),
-                ),
-                obscureText: true,
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Contraseña',
+                        prefixIcon: Icon(Icons.lock),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(16.0),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Por favor, ingresa una contraseña';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) => _password = value!,
+                      obscureText: true,
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(height: 5.0),
+
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
@@ -161,23 +257,34 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 24.0),
             ///////////////BOTONES//////////////
+            if (_isLoading)
+              CircularProgressIndicator()
+            else
+              ElevatedButton(
+                onPressed: () {
+                  _signIn();
+                  // Resto del código
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: const Color.fromARGB(
+                      255, 78, 74, 74), // Color de fondo del botón
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 185.0, vertical: 18.0), // Tamaño del botón
+                  // shape: RoundedRectangleBorder(
+                  //   borderRadius: BorderRadius.circular(8.0),
+                  // ),
+                ),
+                child: const Text(
+                  'Ingresar',
+                  style: TextStyle(fontSize: 18.0),
+                ),
+              ),
+            if (_errorMessage.isNotEmpty)
+              Text(
+                _errorMessage,
+                style: TextStyle(color: Colors.red),
+              ),
 
-            ElevatedButton(
-              onPressed: _login,
-              style: ElevatedButton.styleFrom(
-                primary: const Color.fromARGB(
-                    255, 78, 74, 74), // Color de fondo del botón
-                padding: EdgeInsets.symmetric(
-                    horizontal: 185.0, vertical: 18.0), // Tamaño del botón
-                // shape: RoundedRectangleBorder(
-                //   borderRadius: BorderRadius.circular(8.0),
-                // ),
-              ),
-              child: const Text(
-                'Ingresar',
-                style: TextStyle(fontSize: 18.0),
-              ),
-            ),
             SizedBox(height: 40.0), // Espacio vertical entre los elementos
 
             Row(
@@ -208,17 +315,41 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () async {
                     final authService = AuthService();
                     final userCredential = await authService.signInWithGoogle();
+                    // ignore: unused_local_variable
+
                     // ignore: unnecessary_null_comparison
                     if (userCredential != null) {
-                      // El usuario ha iniciado sesión correctamente
-                      // Realiza las acciones necesarias, como navegación a una nueva pantalla
-                      // ignore: use_build_context_synchronously
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
-                      );
+                      User? user = userCredential.user;
+                      if (user != null) {
+                        // uid = user.uid;
+                        // email = user.email;
+                        // displayName = user.displayName ?? '';
+                        // photoURL = user.photoURL ?? '';
+                        // ignore: use_build_context_synchronously
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                uid: uid,
+                                email: email!,
+                                displayName: displayName,
+                                photoURL: photoURL),
+                          ),
+                        );
+                        // Realiza las acciones necesarias con los datos del usuario
+                      }
                     } else {
                       // Error en el inicio de sesión
+                      String errorMessage = 'Error durante el ingreso';
+                      if (authService.getErrorMessage(context) != null) {
+                        errorMessage = authService.getErrorMessage(context)!;
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(errorMessage),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -273,13 +404,12 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 8.0), // Espacio vertical entre los elementos
                 TextButton(
                   onPressed: () {
-                     Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => RegisterPage()),
-                      );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                    );
                   },
                   child: Text(
-                    
                     'Registrar ahora',
                     style: TextStyle(fontSize: 16.0, color: Colors.blue),
                   ),
