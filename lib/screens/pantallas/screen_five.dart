@@ -4,12 +4,12 @@ import 'package:delphino_app/screens/auth_screens/login_screen.dart';
 
 import '../../services/auth.service.dart';
 
-class ScreenTwo extends StatefulWidget {
+class ScreenFive extends StatefulWidget {
   @override
-  State<ScreenTwo> createState() => _ScreenTwoState();
+  State<ScreenFive> createState() => _ScreenFiveState();
 }
 
-class _ScreenTwoState extends State<ScreenTwo> {
+class _ScreenFiveState extends State<ScreenFive> {
   final AuthService _auth = AuthService();
   User? _user; // Usuario actualmente autenticado
   @override

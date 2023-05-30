@@ -54,21 +54,14 @@ class _LoginPageState extends State<LoginPage> {
 
         // Aquí puedes realizar acciones después de iniciar sesión correctamente, como navegar a otra página.
         if (userCredential.user != null) {
-          User user = userCredential.user!;
-          uid = user.uid;
-          email = user.email;
-          displayName = user.displayName; // Assign the displayName
-          photoURL = user.photoURL ?? '';
+          // User user = userCredential.user!;
+          // uid = user.uid;
+          // email = user.email;
+          // displayName = user.displayName; // Assign the displayName
+          // photoURL = user.photoURL ?? '';
 
           Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomePage(
-                    uid: uid,
-                    email: email!,
-                    displayName: displayName,
-                    photoURL: photoURL)),
-          );
+              context, MaterialPageRoute(builder: (context) => HomePage()));
         }
       } catch (error) {
         setState(() {
@@ -98,43 +91,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
-
-  // void _handleSignIn() async {
-  //   String email = _emailController.text.trim();
-  //   String password = _passwordController.text.trim();
-
-  //   // Validar que los campos de correo electrónico y contraseña no estén vacíos
-  //   if (email.isNotEmpty && password.isNotEmpty) {
-  //     UserCredential? userCredential =
-  //         await authService.signIn(email, password);
-
-  //     // ignore: unnecessary_null_comparison
-  //     if (userCredential != null) {
-  //       // El inicio de sesión fue exitoso, redireccionar a la siguiente pantalla
-  //       Navigator.pushReplacementNamed(context, '/home');
-  //     } else {
-  //       // El inicio de sesión falló, mostrar mensaje de error
-  //       showDialog(
-  //         context: context,
-  //         builder: (context) {
-  //           return AlertDialog(
-  //             title: Text('Error'),
-  //             content:
-  //                 Text('Inicio de sesión fallido. Verifica tus credenciales.'),
-  //             actions: [
-  //               TextButton(
-  //                 child: Text('OK'),
-  //                 onPressed: () {
-  //                   Navigator.of(context).pop();
-  //                 },
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     }
-  //   }
-  // }
 
   @override
   void initState() {
@@ -319,25 +275,11 @@ class _LoginPageState extends State<LoginPage> {
 
                     // ignore: unnecessary_null_comparison
                     if (userCredential != null) {
-                      User? user = userCredential.user;
-                      if (user != null) {
-                        // uid = user.uid;
-                        // email = user.email;
-                        // displayName = user.displayName ?? '';
-                        // photoURL = user.photoURL ?? '';
-                        // ignore: use_build_context_synchronously
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePage(
-                                uid: uid,
-                                email: email!,
-                                displayName: displayName,
-                                photoURL: photoURL),
-                          ),
-                        );
-                        // Realiza las acciones necesarias con los datos del usuario
-                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                      );
+                      // Realiza las acciones necesarias con los datos del usuario
                     } else {
                       // Error en el inicio de sesión
                       String errorMessage = 'Error durante el ingreso';

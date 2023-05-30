@@ -1,49 +1,49 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import '../../services/diccionario.service.dart';
 
 class ScreenOne extends StatefulWidget {
   @override
-  State<ScreenOne> createState() => _ScreenOneState();
+  _ScreenOneState createState() => _ScreenOneState();
 }
 
 class _ScreenOneState extends State<ScreenOne> {
-  List<String> _dictionary = [
-    'Apple',
-    'Banana',
-    'Carrot',
-    'Dog',
-    'Elephant',
-    'Fish',
-    'Giraffe',
-    'Horse',
-    'Ice cream',
-    'Juice',
-    'Kangaroo',
-    'Lemon',
-    'Monkey',
-    'Noodle',
-    'Orange',
-    'Pineapple',
-    'Quail',
-    'Rabbit',
-    'Strawberry',
-    'Tiger',
-    'Umbrella',
-    'Vegetable',
-    'Watermelon',
-    'Xylophone',
-    'Yogurt',
-    'Zebra',
-  ];
-  List<String> _filteredWords = [];
-
+  final DiccionarioService _diccionarioService = DiccionarioService();
+  List<DocumentSnapshot> _allWords = [];
+  List<DocumentSnapshot> _filteredWords = [];
   TextEditingController _searchController = TextEditingController();
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWords();
+  }
+
+  Future<void> _loadWords() async {
+    List<DocumentSnapshot> words = await _diccionarioService.getWords();
+    setState(() {
+      _allWords = words;
+      _filteredWords = words;
+      _isLoading = false;
+    });
+  }
 
   void _searchWords(String keyword) {
-    setState(() {
-      _filteredWords = _dictionary
-          .where((word) => word.toLowerCase().contains(keyword.toLowerCase()))
+    if (keyword.isEmpty) {
+      setState(() {
+        _filteredWords = _allWords;
+      });
+    } else {
+      List<DocumentSnapshot> filteredWords = _allWords
+          .where((word) =>
+              word['palabra'].toLowerCase().contains(keyword.toLowerCase()))
           .toList();
-    });
+      setState(() {
+        _filteredWords = filteredWords;
+      });
+    }
   }
 
   @override
@@ -68,17 +68,68 @@ class _ScreenOneState extends State<ScreenOne> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _filteredWords.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_filteredWords[index]),
-                );
-              },
-            ),
+            child: _isLoading ? _buildLoadingIndicator() : _buildWordList(),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildWordList() {
+    Map<String, List<DocumentSnapshot>> groupedWords =
+        _groupWordsByFirstLetter(_filteredWords);
+    List<String> letters = groupedWords.keys.toList();
+    letters.sort();
+
+    return ListView.separated(
+      itemCount: letters.length,
+      separatorBuilder: (context, index) => Divider(),
+      itemBuilder: (context, index) {
+        String letter = letters[index];
+        List<DocumentSnapshot> words = groupedWords[letter]!;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              title: Text(
+                letter,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            for (DocumentSnapshot word in words)
+              ListTile(
+                title: Text(word['palabra']),
+                // Aquí puedes mostrar los datos adicionales del diccionario
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  Map<String, List<DocumentSnapshot>> _groupWordsByFirstLetter(
+      List<DocumentSnapshot> words) {
+    Map<String, List<DocumentSnapshot>> groupedWords = {};
+
+    for (DocumentSnapshot word in words) {
+      String firstLetter = word['palabra'][0].toUpperCase();
+
+      if (!groupedWords.containsKey(firstLetter)) {
+        groupedWords[firstLetter] = [];
+      }
+
+      groupedWords[firstLetter]!.add(word);
+    }
+
+    return groupedWords;
   }
 }

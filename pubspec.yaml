@@ -32,8 +32,9 @@ dependencies:
     sdk: flutter
   firebase_core: ^2.13.0
   firebase_auth: ^4.6.1
-  google_sign_in: ^6.1.0
+  google_sign_in: ^6.1.2
   flutter_localization: ^0.1.11 
+  cloud_firestore: ^4.7.1
   intl: ^0.18.0
 
 
@@ -70,6 +71,13 @@ flutter:
    - assets/apple_iphone.png
    - assets/welcome.JPG
    - assets/perfil.png
+   - assets/images/hangman_0.png
+   - assets/images/hangman_1.png
+   - assets/images/hangman_2.png
+   - assets/images/hangman_3.png
+   - assets/images/hangman_4.png
+   - assets/images/hangman_5.png
+   - assets/images/hangman_6.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

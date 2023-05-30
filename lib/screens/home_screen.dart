@@ -1,19 +1,11 @@
+import 'package:delphino_app/screens/pantallas/screen_five.dart';
 import 'package:delphino_app/screens/pantallas/screen_one.dart';
 import 'package:delphino_app/screens/pantallas/screen_two.dart';
+import 'package:delphino_app/screens/pantallas/screen_four.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  final String uid;
-  final String email;
-  final String? displayName;
-  final String photoURL;
 
-  const HomePage({
-    required this.uid,
-    required this.email,
-    required this.displayName,
-    required this.photoURL,
-  });
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -25,7 +17,7 @@ class _HomePageState extends State<HomePage> {
     ScreenOne(),
     ScreenTwo(),
     ScreenThree(),
-    ScreenFour(),
+    HangmanGame(),
     ScreenFive(),
   ];
 
@@ -93,26 +85,7 @@ class ScreenThree extends StatelessWidget {
   }
 }
 
-class ScreenFour extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Pantalla cuatro',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
 
-class ScreenFive extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Pantalla cinco',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
+
+
+

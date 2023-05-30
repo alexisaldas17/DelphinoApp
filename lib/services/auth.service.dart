@@ -81,16 +81,31 @@ class AuthService {
     }
   }
 
-  Future<void> signOut() async {
-    await _firebaseAuth.signOut();
-  }
+  // Future<void> signOut() async {
+  //   await _firebaseAuth.signOut();
+  // }
 
-  // Cerrar sesión con Google
-  Future<void> signOutGoogle() async {
-    try {
-      await _googleSignIn.signOut();
-    } catch (e) {
-      print('Error al cerrar sesión con Google: $e');
-    }
+  // // Cerrar sesión con Google
+  // Future<void> signOutGoogle() async {
+  //   try {
+  //     await _googleSignIn.signOut();
+  //   } catch (e) {
+  //     print('Error al cerrar sesión con Google: $e');
+  //   }
+  // }
+  Future<void> signOut() async {
+     try {
+    // Cerrar sesión en Firebase
+    await _firebaseAuth.signOut();
+
+    // Cerrar sesión con Google
+    await _googleSignIn.signOut();
+  } catch (e) {
+    // Manejo de errores
+    _errorMessage = e.toString();
+    print('Error al cerrar sesión: $_errorMessage');
+    throw Exception(_errorMessage);
   }
+  }
+ 
 }
