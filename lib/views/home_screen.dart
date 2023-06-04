@@ -1,7 +1,7 @@
-import 'package:delphino_app/screens/pantallas/screen_five.dart';
-import 'package:delphino_app/screens/pantallas/screen_one.dart';
-import 'package:delphino_app/screens/pantallas/screen_two.dart';
-import 'package:delphino_app/screens/pantallas/screen_four.dart';
+import 'package:delphino_app/pages/aprender_page.dart';
+import 'package:delphino_app/pages/perfil_page.dart';
+import 'package:delphino_app/pages/se%C3%B1as_pages/se%C3%B1as_page.dart';
+// import 'package:delphino_app/screens/pantallas_menu/juegos_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,9 +15,8 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _screens = [
     ScreenOne(),
-    ScreenTwo(),
-    ScreenThree(),
-    HangmanGame(),
+    AprenderPage(),
+    // HangmanGame(),
     ScreenFive(),
   ];
 
@@ -35,13 +34,13 @@ class _HomePageState extends State<HomePage> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Diccionario',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Glosario',
+            label: 'Señas',
           ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.book),
+          //   label: 'Glosario',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Aprender',
@@ -73,17 +72,6 @@ class _HomePageState extends State<HomePage> {
 //   }
 // }
 
-class ScreenThree extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Pantalla tres',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
 
 
 

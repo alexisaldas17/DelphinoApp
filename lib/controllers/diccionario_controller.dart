@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DiccionarioService {
-
-  final CollectionReference _wordsCollection = FirebaseFirestore.instance.collection('diccionario');
+class DiccionarioController {
+  final CollectionReference _wordsCollection =
+      FirebaseFirestore.instance.collection('diccionario');
 
   // Stream<List<DocumentSnapshot>>? getWords() {
   //   try {
@@ -53,6 +53,17 @@ class DiccionarioService {
       await _wordsCollection.doc(wordId).delete();
     } catch (e) {
       print('Error eliminando palabra: $e');
+    }
+  }
+
+  Future<List<DocumentSnapshot>> getWordsByCategory(String category) async {
+    try {
+      QuerySnapshot snapshot =
+          await _wordsCollection.where('categoria', isEqualTo: category).get();
+      return snapshot.docs;
+    } catch (e) {
+      print('Error obteniendo palabras por categoría: $e');
+      return [];
     }
   }
 }

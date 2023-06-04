@@ -42,6 +42,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +79,34 @@ flutter:
    - assets/images/hangman_4.png
    - assets/images/hangman_5.png
    - assets/images/hangman_6.png
+   - assets/letters/letter_A.png
+   - assets/letters/letter_B.png
+   - assets/letters/letter_C.png
+   - assets/letters/letter_D.png
+   - assets/letters/letter_E.png
+   - assets/letters/letter_F.png
+   - assets/letters/letter_G.png
+   - assets/letters/letter_H.png
+   - assets/letters/letter_I.png
+   - assets/letters/letter_J.png
+   - assets/letters/letter_K.png
+   - assets/letters/letter_L.png
+   - assets/letters/letter_M.png
+   - assets/letters/letter_N.png
+  #  - assets/letters/letter_Ñ.png
+   - assets/letters/letter_O.png
+   - assets/letters/letter_P.png
+   - assets/letters/letter_Q.png
+   - assets/letters/letter_R.png
+   - assets/letters/letter_S.png
+   - assets/letters/letter_T.png
+   - assets/letters/letter_U.png
+   - assets/letters/letter_V.png
+   - assets/letters/letter_W.png
+   - assets/letters/letter_X.png
+   - assets/letters/letter_Y.png
+   - assets/letters/letter_Z.png
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

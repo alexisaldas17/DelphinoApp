@@ -1,5 +1,5 @@
-import 'package:delphino_app/screens/auth_screens/login_screen.dart';
-import 'package:delphino_app/screens/welcome_screen.dart';
+import 'package:delphino_app/views/auth_screens/login_screen.dart';
+import 'package:delphino_app/views/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UserService {
+class UserController {
   final CollectionReference _usersCollection = FirebaseFirestore.instance.collection('usuarios');
 
   Future<List<DocumentSnapshot>> getUsers() async {

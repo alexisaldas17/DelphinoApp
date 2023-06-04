@@ -4,7 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../i18n/LocalizedMessages .dart';
 
-class AuthService {
+class AuthController {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   String? _errorMessage;
@@ -94,18 +94,17 @@ class AuthService {
   //   }
   // }
   Future<void> signOut() async {
-     try {
-    // Cerrar sesión en Firebase
-    await _firebaseAuth.signOut();
+    try {
+      // Cerrar sesión en Firebase
+      await _firebaseAuth.signOut();
 
-    // Cerrar sesión con Google
-    await _googleSignIn.signOut();
-  } catch (e) {
-    // Manejo de errores
-    _errorMessage = e.toString();
-    print('Error al cerrar sesión: $_errorMessage');
-    throw Exception(_errorMessage);
+      // Cerrar sesión con Google
+      await _googleSignIn.signOut();
+    } catch (e) {
+      // Manejo de errores
+      _errorMessage = e.toString();
+      print('Error al cerrar sesión: $_errorMessage');
+      throw Exception(_errorMessage);
+    }
   }
-  }
- 
 }

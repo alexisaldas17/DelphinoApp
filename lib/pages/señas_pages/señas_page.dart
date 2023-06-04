@@ -1,15 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:delphino_app/pages/se%C3%B1as_pages/glosario_page.dart';
+import 'package:delphino_app/views/word_popup.dart';
 import 'package:flutter/material.dart';
 
-import '../../services/diccionario.service.dart';
+import '../../controllers/diccionario_controller.dart';
 
 class ScreenOne extends StatefulWidget {
   @override
   _ScreenOneState createState() => _ScreenOneState();
 }
 
-class _ScreenOneState extends State<ScreenOne> {
-  final DiccionarioService _diccionarioService = DiccionarioService();
+class _ScreenOneState extends State<ScreenOne>
+    with SingleTickerProviderStateMixin {
+  // Agrega un controlador de pestañas
+  late TabController _tabController;
+  // bool _isTabControllerInitialized = false;
+
+  final DiccionarioController _diccionarioService = DiccionarioController();
   List<DocumentSnapshot> _allWords = [];
   List<DocumentSnapshot> _filteredWords = [];
   TextEditingController _searchController = TextEditingController();
@@ -18,7 +25,21 @@ class _ScreenOneState extends State<ScreenOne> {
   @override
   void initState() {
     super.initState();
+    // Inicializa el controlador de pestañas con 2 pestañas
+    _tabController = TabController(length: 2, vsync: this);
+    // _tabController.addListener(() {
+    //   if (_tabController.index == 0 || _tabController.index == 1) {
+    //     _isTabControllerInitialized = true;
+    //   }
+    // });
     _loadWords();
+  }
+
+  @override
+  void dispose() {
+    // Libera los recursos del controlador de pestañas
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadWords() async {
@@ -48,30 +69,62 @@ class _ScreenOneState extends State<ScreenOne> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Diccionario'),
+    // ignore: unnecessary_null_comparison
+    if (_tabController == null) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false, // Desactiva la flecha de retroceso
+          toolbarHeight: 10, // Establece una altura más pequeña para el AppBar
+
+          bottom: TabBar(
+            tabs: [
+              Tab(text: 'Diccionario'),
+              Tab(text: 'Glosario'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            // Contenido de la pestaña "Diccionario"
+            _buildDiccionario(),
+            // Contenido de la pestaña "Glosario"
+            GlosarioPage(),
+          ],
+        ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (value) {
-                _searchWords(value);
-              },
-              decoration: InputDecoration(
-                labelText: 'Buscar',
-                prefixIcon: Icon(Icons.search),
-              ),
+    );
+  }
+
+  Widget _buildDiccionario() {
+    // Código original del diccionario
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            controller: _searchController,
+            onChanged: (value) {
+              _searchWords(value);
+            },
+            decoration: InputDecoration(
+              labelText: 'Buscar una palabra',
+              prefixIcon: Icon(Icons.search),
             ),
           ),
-          Expanded(
-            child: _isLoading ? _buildLoadingIndicator() : _buildWordList(),
-          ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: _isLoading ? _buildLoadingIndicator() : _buildWordList(),
+        ),
+      ],
     );
   }
 
@@ -109,6 +162,9 @@ class _ScreenOneState extends State<ScreenOne> {
               ListTile(
                 title: Text(word['palabra']),
                 // Aquí puedes mostrar los datos adicionales del diccionario
+                onTap: () {
+                  _showPopup(context, word);
+                },
               ),
           ],
         );
@@ -132,4 +188,13 @@ class _ScreenOneState extends State<ScreenOne> {
 
     return groupedWords;
   }
+}
+
+void _showPopup(BuildContext context, DocumentSnapshot word) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return WordPopup(word: word);
+    },
+  );
 }

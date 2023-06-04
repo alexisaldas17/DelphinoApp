@@ -1,10 +1,10 @@
-import 'package:delphino_app/screens/auth_screens/registro_screen.dart';
+import 'package:delphino_app/views/auth_screens/registro_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
-import '../../services/auth.service.dart';
+import '../../controllers/auth_controller.dart';
 import '../home_screen.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
   String? displayName; // Add displayName variable
   String photoURL = '';
 
-  final AuthService authService = AuthService();
+  final AuthController authService = AuthController();
   late FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   // late FirebaseAuth _auth;
@@ -269,7 +269,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 ElevatedButton(
                   onPressed: () async {
-                    final authService = AuthService();
+                    final authService = AuthController();
                     final userCredential = await authService.signInWithGoogle();
                     // ignore: unused_local_variable
 

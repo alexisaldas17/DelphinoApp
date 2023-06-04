@@ -1,8 +1,8 @@
-import 'package:delphino_app/screens/auth_screens/login_screen.dart';
+import 'package:delphino_app/views/auth_screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../services/auth.service.dart';
+import '../../controllers/auth_controller.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -10,7 +10,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final AuthService _authService = AuthService();
+  final AuthController _authService = AuthController();
 
   final TextEditingController _nameController = TextEditingController();
 
@@ -45,28 +45,28 @@ class _RegisterPageState extends State<RegisterPage> {
     if (userCredential != null) {
       // Registro exitoso, realiza las acciones necesarias, como navegar a otra página.
       ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Registro exitoso'),
-        duration: Duration(seconds: 3),
-      ),
-    );
+        SnackBar(
+          content: Text('Registro exitoso'),
+          duration: Duration(seconds: 3),
+        ),
+      );
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => LoginPage()),
       );
       // print('Registro exitoso: ${userCredential.user!.email}');
     } else {
-     // Error durante el registro, muestra un mensaje de error traducido
-    String errorMessage = 'Error durante el registro';
-    if (_authService.getErrorMessage(context) != null) {
-      errorMessage = _authService.getErrorMessage(context)!;
-    }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(errorMessage),
-        duration: Duration(seconds: 3),
-      ),
-    );
+      // Error durante el registro, muestra un mensaje de error traducido
+      String errorMessage = 'Error durante el registro';
+      if (_authService.getErrorMessage(context) != null) {
+        errorMessage = _authService.getErrorMessage(context)!;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
   }
 

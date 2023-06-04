@@ -1,4 +1,4 @@
-import 'package:delphino_app/screens/auth_screens/login_screen.dart';
+import 'package:delphino_app/views/auth_screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'auth_screens/registro_screen.dart';

@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:delphino_app/screens/auth_screens/login_screen.dart';
+import 'package:delphino_app/views/auth_screens/login_screen.dart';
 
-import '../../services/auth.service.dart';
+import '../controllers/auth_controller.dart';
 
 class ScreenFive extends StatefulWidget {
   @override
@@ -10,7 +10,7 @@ class ScreenFive extends StatefulWidget {
 }
 
 class _ScreenFiveState extends State<ScreenFive> {
-  final AuthService _auth = AuthService();
+  final AuthController _auth = AuthController();
   User? _user; // Usuario actualmente autenticado
   @override
   void initState() {
@@ -18,15 +18,16 @@ class _ScreenFiveState extends State<ScreenFive> {
     // Obtener el usuario actualmente autenticado al iniciar la pantalla
     _user = _auth.getCurrentUser();
   }
+
 //Metodo para Cerrar Sesion
   void _handleSignOut(BuildContext context) async {
     try {
       await _auth.signOut();
-    // Redireccionar a la página de inicio de sesión
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
+      // Redireccionar a la página de inicio de sesión
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
     } catch (e) {
       // Manejo de errores
       print('Error al cerrar sesión: $e');
@@ -54,13 +55,12 @@ class _ScreenFiveState extends State<ScreenFive> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: Container(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-             CircleAvatar(
+            CircleAvatar(
               radius: 60,
               backgroundColor: Colors.transparent,
               child: ClipOval(
