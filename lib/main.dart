@@ -1,11 +1,7 @@
-import 'package:delphino_app/views/auth_screens/registro_screen.dart';
 import 'package:delphino_app/views/home_screen.dart';
-import 'package:delphino_app/views/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter/material.dart';
 
-import 'views/auth_screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -13,17 +13,16 @@ class _RegisterPageState extends State<RegisterPage> {
   final AuthController _authService = AuthController();
 
   final TextEditingController _nameController = TextEditingController();
-
+  final TextEditingController _lastnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-
   final TextEditingController _passwordController = TextEditingController();
-
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
 //////////////METODO PARA EL REGISTRO DE USUARIO/////////////////
   void _register() async {
     String name = _nameController.text;
+    String lastname = _lastnameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -5,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../i18n/LocalizedMessages .dart';
 
 class AuthController {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   String? _errorMessage;
@@ -44,7 +46,28 @@ class AuthController {
     return null;
   }
 
-  Future<UserCredential?> signUp(
+  // Future<UserCredential?> signUp(
+  //     String email, String password, String name) async {
+  //   try {
+  //     UserCredential userCredential =
+  //         await _firebaseAuth.createUserWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+
+  //     // Asignar nombre de usuario
+  //     if (userCredential.user != null) {
+  //       await userCredential.user!.updateDisplayName(name);
+  //     }
+
+  //     return userCredential;
+  //   } catch (e) {
+  //     // Manejo de errores
+  //     _errorMessage = e.toString(); // Capturar el mensaje de error
+  //     return null;
+  //   }
+  // }
+ Future<UserCredential?> signUp(
       String email, String password, String name) async {
     try {
       UserCredential userCredential =
@@ -58,6 +81,18 @@ class AuthController {
         await userCredential.user!.updateDisplayName(name);
       }
 
+      // Almacenar los datos en la colección "usuarios" de Firestore
+      if (userCredential.user != null) {
+        await _firestore.collection('usuarios').doc(userCredential.user!.uid).set({
+          'id': userCredential.user!.uid,
+          'nombre': name,
+          'email': email,
+          'contrasenia': password,
+          'rol': 'usuario',
+          'fecha_creacion': DateTime.now(),
+        });
+      }
+
       return userCredential;
     } catch (e) {
       // Manejo de errores
@@ -65,7 +100,6 @@ class AuthController {
       return null;
     }
   }
-
   Future<UserCredential?> signIn(String email, String password) async {
     try {
       UserCredential userCredential =

@@ -2,14 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:delphino_app/views/auth_screens/login_screen.dart';
 
-import '../controllers/auth_controller.dart';
+import '../../controllers/auth_controller.dart';
 
-class ScreenFive extends StatefulWidget {
+class PerfilPage extends StatefulWidget {
   @override
-  State<ScreenFive> createState() => _ScreenFiveState();
+  State<PerfilPage> createState() => _PerfilPageState();
 }
 
-class _ScreenFiveState extends State<ScreenFive> {
+class _PerfilPageState extends State<PerfilPage> {
   final AuthController _auth = AuthController();
   User? _user; // Usuario actualmente autenticado
   @override

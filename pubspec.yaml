@@ -67,11 +67,14 @@ flutter_native_splash:
 flutter:
   assets:
    - assets/google_logo.png
+   - assets/images/default_image.png
    - assets/splash.jpg
    - assets/facebook_logo.png
    - assets/apple_iphone.png
    - assets/welcome.JPG
    - assets/perfil.png
+   - assets/game1.png
+   - assets/game2.png
    - assets/images/hangman_0.png
    - assets/images/hangman_1.png
    - assets/images/hangman_2.png
