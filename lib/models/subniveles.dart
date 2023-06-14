@@ -5,11 +5,14 @@ class Subnivel {
   List<Leccion> lecciones;
   String nombre;
   String urlImage;
+  bool? subnivelAprobado;
 
   Subnivel({
     required this.id,
     required this.nombre,
     required this.lecciones,
     required this.urlImage,
+    this.subnivelAprobado
+    //this.aprobado
   });
 }

@@ -1,8 +1,10 @@
+import 'package:delphino_app/views/pages/perfil_pages/editar_perfil_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:delphino_app/views/auth_screens/login_screen.dart';
 
-import '../../controllers/auth_controller.dart';
+import '../../../controllers/auth_controller.dart';
+
 
 class PerfilPage extends StatefulWidget {
   @override
@@ -12,6 +14,7 @@ class PerfilPage extends StatefulWidget {
 class _PerfilPageState extends State<PerfilPage> {
   final AuthController _auth = AuthController();
   User? _user; // Usuario actualmente autenticado
+
   @override
   void initState() {
     super.initState();
@@ -19,7 +22,7 @@ class _PerfilPageState extends State<PerfilPage> {
     _user = _auth.getCurrentUser();
   }
 
-//Metodo para Cerrar Sesion
+  // Método para Cerrar Sesión
   void _handleSignOut(BuildContext context) async {
     try {
       await _auth.signOut();
@@ -31,7 +34,6 @@ class _PerfilPageState extends State<PerfilPage> {
     } catch (e) {
       // Manejo de errores
       print('Error al cerrar sesión: $e');
-
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -50,6 +52,15 @@ class _PerfilPageState extends State<PerfilPage> {
         },
       );
     }
+  }
+
+  // Método para editar los datos del usuario
+  void _handleEditProfile(BuildContext context) {
+     // Navegar a la pantalla de edición de perfil
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EditProfilePage(user: _user!)),
+    );
   }
 
   @override
@@ -99,6 +110,10 @@ class _PerfilPageState extends State<PerfilPage> {
               ),
             ),
             SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _handleEditProfile(context), // Agrega el manejo del botón de editar perfil
+              child: Text('Editar perfil'),
+            ),
             ElevatedButton(
               onPressed: () => _handleSignOut(context),
               child: Text('Cerrar sesión'),

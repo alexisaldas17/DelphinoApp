@@ -1,8 +1,10 @@
 import 'package:delphino_app/views/pages/aprender_pages/aprender_page.dart';
-import 'package:delphino_app/views/pages/perfil_page.dart';
+import 'package:delphino_app/views/pages/perfil_pages/perfil_page.dart';
 import 'package:delphino_app/views/pages/se%C3%B1as_pages/se%C3%B1as_page.dart';
 import 'package:delphino_app/views/pages/juegos_pages/juegos_page.dart';
 import 'package:flutter/material.dart';
+
+import '../controllers/auth_controller.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,7 +16,9 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _screens = [
     SeniasPage(),
-    AprenderPage(),
+    AuthControllerProvider(
+      child: AprenderPage(),
+    ),
     JuegosPage(),
     PerfilPage(),
   ];

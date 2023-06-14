@@ -36,6 +36,9 @@ dependencies:
   flutter_localization: ^0.1.11 
   cloud_firestore: ^4.7.1
   intl: ^0.18.0
+  fluttertoast: ^8.0.7
+  shared_preferences: ^2.0.7
+
 
 
 
@@ -109,6 +112,35 @@ flutter:
    - assets/letters/letter_X.png
    - assets/letters/letter_Y.png
    - assets/letters/letter_Z.png
+   - assets/abecedario/a.PNG
+   - assets/abecedario/b.PNG
+   - assets/abecedario/c.PNG
+   - assets/abecedario/d.PNG
+   - assets/abecedario/e.PNG
+   - assets/abecedario/f.PNG
+   - assets/abecedario/g.PNG
+   - assets/abecedario/h.PNG
+   - assets/abecedario/i.PNG
+   - assets/abecedario/j.PNG
+   - assets/abecedario/k.PNG
+   - assets/abecedario/l.PNG
+   - assets/abecedario/ll.PNG
+   - assets/abecedario/m.PNG
+   - assets/abecedario/n.PNG
+   - assets/abecedario/ñ.PNG
+   - assets/abecedario/o.PNG
+   - assets/abecedario/p.PNG
+   - assets/abecedario/q.PNG
+   - assets/abecedario/r.PNG
+   - assets/abecedario/s.PNG
+   - assets/abecedario/t.PNG
+   - assets/abecedario/u.PNG
+   - assets/abecedario/v.PNG
+   - assets/abecedario/w.PNG
+   - assets/abecedario/x.PNG
+   - assets/abecedario/y.PNG
+   - assets/abecedario/z.PNG
+
 
 
   # The following line ensures that the Material Icons font is

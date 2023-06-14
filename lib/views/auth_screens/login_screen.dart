@@ -47,13 +47,14 @@ class _LoginPageState extends State<LoginPage> {
       _formKey.currentState!.save();
 
       try {
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: _email,
-          password: _password,
+        UserCredential? userCredential = await authService.signIn(
+          context,
+          _email,
+          _password,
         );
 
         // Aquí puedes realizar acciones después de iniciar sesión correctamente, como navegar a otra página.
-        if (userCredential.user != null) {
+        if (userCredential != null) {
           // User user = userCredential.user!;
           // uid = user.uid;
           // email = user.email;
@@ -270,7 +271,8 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: () async {
                     final authService = AuthController();
-                    final userCredential = await authService.signInWithGoogle();
+                    final userCredential =
+                        await authService.signInWithGoogle(context);
                     // ignore: unused_local_variable
 
                     // ignore: unnecessary_null_comparison

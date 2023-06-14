@@ -12,12 +12,12 @@ class HangmanGame extends StatefulWidget {
 
 class _HangmanGameState extends State<HangmanGame> {
   List<String> words = [
-    'FLUTTER',
-    'DEVELOPMENT',
-    'GAME',
-    'HANGMAN',
-    'LANGUAGE',
-    'SIGN',
+    'ABEJA',
+    'ESCOBA',
+    'MALETA',
+    'CUADERNO',
+    'PROFESORA',
+    'ARAÑA',
   ];
 
   String selectedWord = '';
@@ -53,13 +53,13 @@ class _HangmanGameState extends State<HangmanGame> {
           }
           if (!displayedWord.contains('_')) {
             // Player has won the game
-            showGameOverDialog('Congratulations! You won!');
+            showGameOverDialog('Felicitaciones! Tu Ganaste!');
           }
         } else {
           incorrectGuesses++;
           if (incorrectGuesses == remainingAttempts) {
             // Player has lost the game
-            showGameOverDialog('Oops! You lost. Try again!');
+            showGameOverDialog('Oops! Perdiste. Intenta nuevamente!');
           }
         }
       }
@@ -71,11 +71,11 @@ class _HangmanGameState extends State<HangmanGame> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Game Over'),
+          title: Text('Hey!'),
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: Text('Play Again'),
+              child: Text('Jugar de nuevo'),
               onPressed: () {
                 selectRandomWord();
                 Navigator.of(context).pop();
@@ -92,14 +92,14 @@ class _HangmanGameState extends State<HangmanGame> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Hangman Game'),
+          title: Text('AHORCADO'),
         ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(
             children: <Widget>[
               Text(
-                'Guess the word:',
+                'Adivina la palabra :',
                 style: TextStyle(fontSize: 20),
               ),
               SizedBox(height: 10),
@@ -118,38 +118,38 @@ class _HangmanGameState extends State<HangmanGame> {
               ),
               SizedBox(height: 20),
               Text(
-                'Remaining Attempts: ${remainingAttempts - incorrectGuesses}',
+                'Intentos Restantes: ${remainingAttempts - incorrectGuesses}',
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 10),
-              Wrap(
-                spacing: 10,
-                children: List.generate(26, (index) {
-                  final letter = String.fromCharCode(index + 65);
-                  return GestureDetector(
-                    onTap: () => guessLetter(letter),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: guessedLetters.contains(letter)
-                            ? Colors.grey
-                            : Colors.blue,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: Text(
-                          letter,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 5, // Cambiar a 5 columnas
+                  mainAxisSpacing: 5, // Espacio vertical entre los botones
+                  crossAxisSpacing: 5, // Espacio horizontal entre los botones
+                  childAspectRatio: 1, // Relación de aspecto cuadrada para los botones
+                  children: List.generate(26, (index) {
+                    final letter = String.fromCharCode(index + 65);
+                    return GestureDetector(
+                      onTap: () => guessLetter(letter),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: guessedLetters.contains(letter)
+                              ? Colors.grey
+                              : Colors.blue,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset(
+                            'assets/abecedario/${letter.toLowerCase()}.PNG',
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  }),
+                ),
               ),
             ],
           ),

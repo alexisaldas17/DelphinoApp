@@ -1,8 +1,10 @@
 import 'package:delphino_app/models/subniveles.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/lecciones.dart';
 import '../../../models/preguntas.dart';
+import '../../../providers/user.provider.dart';
 import '../../../views/pages/aprender_pages/leccion_page.dart'; // Importa la página LeccionPage
 
 class BottomPopup extends StatefulWidget {
@@ -25,6 +27,11 @@ class _BottomPopupState extends State<BottomPopup> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider =
+        Provider.of<UserProvider>(context); // Acceder a UserProvider
+    final progreso =
+        userProvider.user?.progreso; // Obtener el progreso del usuario
+
     return Container(
       height: 300,
       child: Material(
@@ -37,6 +44,11 @@ class _BottomPopupState extends State<BottomPopup> {
                       itemCount: lecciones.length,
                       itemBuilder: (context, index) {
                         final leccion = lecciones[index];
+
+                        // Verificar si la lección está aprobada
+                        final leccionAprobada =
+                            progreso?.leccionesCompletadas.contains(leccion) ??
+                                false;
 
                         return GestureDetector(
                           onTap: () {
@@ -52,8 +64,7 @@ class _BottomPopupState extends State<BottomPopup> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => LeccionPage(
-                                  preguntas: preguntas,
-                                ),
+                                    preguntas: preguntas, leccion: leccion),
                               ),
                             );
                           },
@@ -78,6 +89,9 @@ class _BottomPopupState extends State<BottomPopup> {
                             ),
                             child: ListTile(
                               title: Text(leccion.nombre),
+                              trailing: leccionAprobada
+                                  ? Icon(Icons.check, color: Colors.green)
+                                  : null,
                             ),
                           ),
                         );
