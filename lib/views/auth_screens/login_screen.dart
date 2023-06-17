@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import '../../controllers/auth_controller.dart';
+import '../../providers/aprender.provider.dart';
 import '../home_screen.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -96,6 +98,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    //OBTENER LOS NIVELES DESDE FIREBASE
+     Provider.of<AprenderProvider>(context, listen: false)
+        .obtenerNivelesDesdeFirebase();
+    /////////////////////////////////////
     _formKey = GlobalKey<FormState>();
     Firebase.initializeApp().then((value) {
       setState(() {

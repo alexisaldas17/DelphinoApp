@@ -46,9 +46,14 @@ class _BottomPopupState extends State<BottomPopup> {
                         final leccion = lecciones[index];
 
                         // Verificar si la lección está aprobada
-                        final leccionAprobada =
-                            progreso?.leccionesCompletadas.contains(leccion) ??
-                                false;
+                        final leccionAprobada = progreso?.leccionesCompletadas
+                                .any((leccionCompletada) =>
+                                    leccionCompletada.identificador ==
+                                    leccion.identificador) ??
+                            false;
+
+                        // progreso?.leccionesCompletadas.contains(leccion.identificador) ??
+                        //     false;
 
                         return GestureDetector(
                           onTap: () {

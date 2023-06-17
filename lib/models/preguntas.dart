@@ -14,4 +14,27 @@ class Pregunta {
       required this.opciones,
       required this.respuestaCorrecta,
       this.tipo});
+
+    Map<String, dynamic> toMap() {
+    final map = {
+      'id': id,
+      'enunciado': enunciado,
+      'opciones': opciones,
+      'respuestaCorrecta': respuestaCorrecta,
+    };
+
+    if (idLeccion != null) {
+      map['idLeccion'] = idLeccion;
+    }
+
+    if (imagen != null) {
+      map['imagen'] = imagen;
+    }
+
+    if (tipo != null) {
+      map['tipo'] = tipo;
+    }
+
+    return map;
+  }
 }

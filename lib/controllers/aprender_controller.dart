@@ -4,11 +4,17 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delphino_app/models/preguntas.dart';
 import 'package:delphino_app/models/subniveles.dart';
+import 'package:delphino_app/providers/aprender.provider.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import '../models/lecciones.dart';
 import '../models/niveles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AprenderController {
+  //AprenderProvider _aprenderProvider;
+
+  //AprenderController(this._aprenderProvider);
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final _nivelesStreamController = StreamController<List<Nivel>>();
   Stream<List<Nivel>> get nivelesStream => _nivelesStreamController.stream;
@@ -29,7 +35,7 @@ class AprenderController {
     return collections;
   }
 
-  Future<void> getNiveles() async {
+  Future<List<Nivel>> getNiveles() async {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cachedData = prefs.getString('cached_data');
     // if (cachedData != null) {
@@ -41,7 +47,11 @@ class AprenderController {
     // }
     // Obtener los datos de Firebase
     List<Nivel> niveles = await fetchNivelesFromFirebase();
-
+    // AprenderProvider aprenderProvider =
+    //       Provider.of<AprenderProvider>(context, listen: false);
+    // aprenderProvider.setNivel(niveles);
+    
+    return niveles;
     // Comparar los datos obtenidos de Firebase con los datos almacenados en la caché
     // if (!areEqual(cachedData, niveles)) {
     //   // Los datos de Firebase son diferentes a los de la caché, actualizar la caché y emitir los datos actualizados
@@ -55,7 +65,7 @@ class AprenderController {
     // // Almacenar los datos en la caché
     // String dataToCache = serializeNiveles(niveles);
     // prefs.setString('cached_data', dataToCache);
-     _nivelesStreamController.add(niveles);
+    //_nivelesStreamController.add(niveles);
 
     // // Escuchar los cambios en la colección de niveles y actualizar la caché en caso de cambios
     // nivelesCollection.snapshots().listen((snapshot) async {
@@ -145,7 +155,7 @@ class AprenderController {
 
             Pregunta pregunta = Pregunta(
                 id: idPregunta,
-               // idLeccion: idLeccion,
+                // idLeccion: idLeccion,
                 imagen: imagenPregunta,
                 enunciado: enunciadoPregunta,
                 opciones: opciones,
@@ -155,7 +165,10 @@ class AprenderController {
             preguntas.add(pregunta);
           }
           Leccion leccion = Leccion(
-              id: idLeccion, nombre: leccionNombre, preguntas: preguntas, identificador: identificador);
+              id: idLeccion,
+              nombre: leccionNombre,
+              preguntas: preguntas,
+              identificador: identificador);
           lecciones.add(leccion);
         }
 
@@ -164,8 +177,7 @@ class AprenderController {
             nombre: subnivelNombre,
             lecciones: lecciones,
             urlImage: urlImage,
-            subnivelAprobado: subnivelAprobado
-            );
+            subnivelAprobado: subnivelAprobado);
         subniveles.add(subnivel);
       }
 
@@ -305,7 +317,6 @@ class AprenderController {
     for (dynamic leccionData in leccionesData) {
       String idLeccion = leccionData['identificador'];
       String leccionNombre = leccionData['nombre'];
-      
 
       // Parsear las preguntas de leccionData, de manera similar a como se hizo en getNiveles()
       List<Pregunta> preguntas = parsePreguntas(leccionData);

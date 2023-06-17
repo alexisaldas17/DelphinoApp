@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:delphino_app/models/lecciones.dart';
 import 'package:delphino_app/models/usuario.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 import '../i18n/LocalizedMessages .dart';
+import '../models/subniveles.dart';
+import '../providers/aprender.provider.dart';
 import '../providers/user.provider.dart';
 
 class AuthController with ChangeNotifier {
@@ -49,26 +52,108 @@ class AuthController with ChangeNotifier {
           'imagenUrl': userCredential.user!.photoURL,
           // Otras propiedades que desees almacenar
         });
-      }
-// Obtén los datos del usuario desde Firestore
-      final DocumentSnapshot updatedUserSnapshot = await userDocument.get();
-      if (updatedUserSnapshot.exists) {
-        final Map<String, dynamic> userData =
-            updatedUserSnapshot.data() as Map<String, dynamic>;
-        // Mapear los datos del documento en un objeto Usuario
-        Usuario usuario = Usuario(
-          nombre: userData['nombre'] ?? '',
-          uid: userData['uid'] ?? '',
-          email: userData['email'] ?? '',
-          photoUrl: userData['imagenUrl'] ?? '',
+
+        final subnivel = Subnivel(
+          id: 0,
+          nombre: 'ABC 1',
+          lecciones: [],
+          urlImage: '',
+          subnivelAprobado: true,
         );
-
-        // Actualiza el estado del usuario en UserProvider
-        final UserProvider userProvider =
-            Provider.of<UserProvider>(context, listen: false);
-        userProvider.setUser(usuario);
+        // Agregar la subcolección "progreso"
+        final progresoCollection = userDocument.collection('progreso');
+        await progresoCollection.add({
+          // Propiedades iniciales para el progreso del usuario
+          'subnivelesAprobados': FieldValue.arrayUnion([subnivel.toMap()]),
+          'leccionesAprobadas': [],
+          // Otras propiedades relacionadas con el progreso
+        });
       }
 
+      // Obtén los datos del usuario desde Firestore
+      final DocumentSnapshot updatedUserSnapshot = await userDocument.get();
+      // Obtén la subcolección "progreso" del usuario
+      final CollectionReference progresoCollection =
+          userDocument.collection('progreso');
+      final QuerySnapshot progresoSnapshot = await progresoCollection.get();
+
+      if (updatedUserSnapshot.exists) {
+        // Verifica si hay algún documento en la subcolección "progreso"
+        if (progresoSnapshot.docs.isNotEmpty) {
+          final DocumentSnapshot progresoDocument = progresoSnapshot.docs.first;
+          final Map<String, dynamic> progresoData =
+              progresoDocument.data() as Map<String, dynamic>;
+
+          // Obtén los datos de subniveles completados
+          final List<dynamic> subnivelesCompletadosData =
+              progresoData['subnivelesAprobados'];
+
+          // Obtén los datos de subniveles completados
+          final List<dynamic> leccionesCompletadosData =
+              progresoData['leccionesAprobadas'];
+
+          // Verifica si los datos de subniveles o lecciones completados no son nulos
+          if (subnivelesCompletadosData.isNotEmpty ||
+              leccionesCompletadosData.isNotEmpty) {
+            // Crea una lista para almacenar los subniveles completados
+            List<Subnivel> subnivelesCompletados = [];
+            List<Leccion> leccionesCompletados = [];
+
+            // Mapea los datos de subniveles completados en objetos Subnivel
+            subnivelesCompletados = subnivelesCompletadosData.map((data) {
+              return Subnivel(
+                id: data['id'],
+                lecciones: [],
+                urlImage: '',
+                nombre: data['nombre'],
+                // Asigna otras propiedades de Subnivel si las hay
+              );
+            }).toList();
+
+            leccionesCompletados = leccionesCompletadosData.map((data) {
+              return Leccion(
+                  nombre: data['nombre'],
+                  preguntas: [],
+                  identificador: data['identificador'],
+                  id: data['id']);
+            }).toList();
+
+            final progreso = Progreso(
+                subnivelesCompletados: subnivelesCompletados,
+                leccionesCompletadas: leccionesCompletados);
+
+            final Map<String, dynamic> userData =
+                updatedUserSnapshot.data() as Map<String, dynamic>;
+
+            final aprenderProvider =
+                Provider.of<AprenderProvider>(context, listen: false);
+
+            for (final subnivelCompletado in subnivelesCompletados) {
+              final int subnivelId = subnivelCompletado.id;
+              final Subnivel? subnivel = aprenderProvider.niveles
+                  ?.expand((nivel) => nivel.subniveles)
+                  .firstWhere((subnivel) => subnivel.id == subnivelId);
+
+              if (subnivel != null) {
+                subnivel.subnivelAprobado = true;
+              }
+            }
+
+            // Mapear los datos del documento en un objeto Usuario
+            Usuario usuario = Usuario(
+                nombre: userData['nombre'] ?? '',
+                uid: userData['uid'] ?? '',
+                email: userData['email'] ?? '',
+                photoUrl: userData['imagenUrl'] ?? '',
+                progreso: progreso);
+
+            // Actualiza el estado del usuario en UserProvider
+            final UserProvider userProvider =
+                Provider.of<UserProvider>(context, listen: false);
+            userProvider.setUser(usuario);
+          }
+        }
+      }
       return userCredential;
     } catch (e) {
       // Manejo de errores

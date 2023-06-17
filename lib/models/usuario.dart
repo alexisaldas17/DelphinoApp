@@ -45,15 +45,25 @@ class Progreso {
         leccionesCompletadas = leccionesCompletadas ?? [];
 
   void marcarSubnivelComoCompletado(Subnivel subnivel) {
-    if (!subnivelesCompletados.contains(subnivel)) {
+    if (!subnivelesCompletados.any((subnivelCompletado) =>
+        subnivelCompletado.nombre == subnivel.nombre)) {
       subnivelesCompletados.add(subnivel);
     }
   }
 
   void marcarLeccionComoCompletada(Leccion leccion) {
-    if (!leccionesCompletadas.contains(leccion)) {
+    if (!leccionesCompletadas.any((leccionCompletada) =>
+        leccionCompletada.identificador == leccion.identificador)) {
       leccion.leccionCompletada = true;
       leccionesCompletadas.add(leccion);
     }
+  }
+
+  // Puedes implementar un método `toMap()` en la clase Progreso para convertirlo a un mapa
+  Map<String, dynamic> toMap() {
+    return {
+      'subnivelesCompletados': subnivelesCompletados,
+      'leccionesCompletadas': leccionesCompletadas,
+    };
   }
 }
