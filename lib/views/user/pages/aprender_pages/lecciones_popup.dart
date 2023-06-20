@@ -2,10 +2,9 @@ import 'package:delphino_app/models/subniveles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/lecciones.dart';
-import '../../../models/preguntas.dart';
-import '../../../providers/user.provider.dart';
-import '../../../views/pages/aprender_pages/leccion_page.dart'; // Importa la página LeccionPage
+import '../../../../models/lecciones.dart';
+import '../../../../providers/user.provider.dart';
+import 'leccion_page.dart';
 
 class BottomPopup extends StatefulWidget {
   final Subnivel subnivel;

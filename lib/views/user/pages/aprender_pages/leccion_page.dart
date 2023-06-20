@@ -5,7 +5,8 @@ import 'package:delphino_app/providers/user.provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import '../../../models/preguntas.dart';
+
+import '../../../../models/preguntas.dart';
 
 class LeccionPage extends StatefulWidget {
   final List<Pregunta> preguntas;

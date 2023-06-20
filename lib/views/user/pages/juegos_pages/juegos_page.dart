@@ -1,5 +1,6 @@
-import 'package:delphino_app/views/pages/juegos_pages/hangman_game.dart';
 import 'package:flutter/material.dart';
+
+import 'hangman_game.dart';
 
 class JuegosPage extends StatefulWidget {
   @override

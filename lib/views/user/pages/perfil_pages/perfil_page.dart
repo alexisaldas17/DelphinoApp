@@ -1,9 +1,10 @@
-import 'package:delphino_app/views/pages/perfil_pages/editar_perfil_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:delphino_app/views/auth_screens/login_screen.dart';
 
-import '../../../controllers/auth_controller.dart';
+import '../../../../controllers/auth_controller.dart';
+import 'editar_perfil_page.dart';
+
 
 
 class PerfilPage extends StatefulWidget {

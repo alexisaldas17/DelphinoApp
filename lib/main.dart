@@ -2,7 +2,7 @@ import 'package:delphino_app/providers/aprender.provider.dart';
 import 'package:delphino_app/providers/user.provider.dart';
 import 'package:delphino_app/theme.notifier.dart';
 import 'package:delphino_app/views/auth_screens/login_screen.dart';
-import 'package:delphino_app/views/home_screen.dart';
+import 'package:delphino_app/views/admin/pages/home_admin.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
     ],
     child: MaterialApp(
         title: 'Delphino App',
-        home: LoginPage(),
+        home: HomeAdministrador(),
       ),
     );
   }

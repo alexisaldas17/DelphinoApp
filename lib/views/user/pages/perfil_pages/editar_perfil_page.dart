@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../theme.notifier.dart';
+import '../../../../theme.notifier.dart';
+
 
 class EditProfilePage extends StatefulWidget {
   final User user;

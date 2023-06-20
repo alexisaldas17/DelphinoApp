@@ -1,7 +1,7 @@
-import 'package:delphino_app/views/pages/aprender_pages/aprender_page.dart';
-import 'package:delphino_app/views/pages/perfil_pages/perfil_page.dart';
-import 'package:delphino_app/views/pages/se%C3%B1as_pages/se%C3%B1as_page.dart';
-import 'package:delphino_app/views/pages/juegos_pages/juegos_page.dart';
+import 'package:delphino_app/views/user/pages/aprender_pages/aprender_page.dart';
+import 'package:delphino_app/views/user/pages/juegos_pages/juegos_page.dart';
+import 'package:delphino_app/views/user/pages/perfil_pages/perfil_page.dart';
+import 'package:delphino_app/views/user/pages/se%C3%B1as_pages/se%C3%B1as_page.dart';
 import 'package:flutter/material.dart';
 
 import '../controllers/auth_controller.dart';

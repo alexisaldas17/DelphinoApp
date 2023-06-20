@@ -1,16 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../controllers/diccionario_controller.dart';
+import '../../../../../controllers/diccionario_controller.dart';
 
-class AnimalesPage extends StatefulWidget {
-  const AnimalesPage({Key? key}) : super(key: key);
+
+class FrutasPage extends StatefulWidget {
+  const FrutasPage({Key? key}) : super(key: key);
 
   @override
-  State<AnimalesPage> createState() => _AnimalesPageState();
+  State<FrutasPage> createState() => _FrutasPageState();
 }
 
-class _AnimalesPageState extends State<AnimalesPage> {
+class _FrutasPageState extends State<FrutasPage> {
+  List<String> frutas = ['Manzana', 'Pera', 'Piña'];
+
   // Lista de colores para los botones
   List<Color> buttonColors = [
     Colors.red,
@@ -39,7 +42,7 @@ class _AnimalesPageState extends State<AnimalesPage> {
   Widget build(BuildContext context) {
     return FutureBuilder<List<DocumentSnapshot>>(
       future: _diccionarioService
-          .getWordsByCategory('animales'), // Filtrar por la categoría 'frutas'
+          .getWordsByCategory('frutas'), // Filtrar por la categoría 'frutas'
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator(); // Muestra un indicador de carga mientras se obtienen los datos
@@ -48,21 +51,21 @@ class _AnimalesPageState extends State<AnimalesPage> {
           return Text(
               'Error: ${snapshot.error}'); // Muestra un mensaje de error si ocurre algún problema
         }
-        List<DocumentSnapshot>? animalesDocuments = snapshot.data;
-        if (animalesDocuments == null || animalesDocuments.isEmpty) {
+        List<DocumentSnapshot>? frutasDocuments = snapshot.data;
+        if (frutasDocuments == null || frutasDocuments.isEmpty) {
           return Text(
-              'No se encontraron animales.'); // Muestra un mensaje si no se encuentran frutas
+              'No se encontraron frutas.'); // Muestra un mensaje si no se encuentran frutas
         }
         return GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3, // Número de columnas
           ),
-          itemCount: animalesDocuments.length,
+          itemCount: frutasDocuments.length,
           itemBuilder: (context, index) {
-            final animalSnapshot = animalesDocuments[index];
-            final animalData = animalSnapshot.data() as Map<String, dynamic>;
-            final animalNombre = animalData['palabra'] as String;
-            final animalImagen = animalData['imagen'] as String;
+            final frutaSnapshot = frutasDocuments[index];
+            final frutaData = frutaSnapshot.data() as Map<String, dynamic>;
+            final frutaNombre = frutaData['palabra'] as String;
+            final frutaImagen = frutaData['imagen'] as String;
             final buttonColor = buttonColors[index %
                 buttonColors
                     .length]; // Asigna un color de la lista en base al índice
@@ -70,7 +73,7 @@ class _AnimalesPageState extends State<AnimalesPage> {
             return ElevatedButton(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Animal seleccionado: $animalNombre')),
+                  SnackBar(content: Text('Fruta seleccionada: $frutaNombre')),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -79,9 +82,9 @@ class _AnimalesPageState extends State<AnimalesPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (animalImagen.isNotEmpty)
+                  if (frutaImagen.isNotEmpty)
                     Image.network(
-                      animalImagen, // URL de la imagen para cada fruta
+                      frutaImagen, // URL de la imagen para cada fruta
                       width: 50,
                       height: 50,
                     )
@@ -90,7 +93,7 @@ class _AnimalesPageState extends State<AnimalesPage> {
                         .image_not_supported), // Widget alternativo cuando la URL está vacía
                   SizedBox(height: 10),
                   Text(
-                    animalNombre,
+                    frutaNombre,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],

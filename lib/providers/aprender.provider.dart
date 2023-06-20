@@ -37,30 +37,30 @@ class AprenderProvider with ChangeNotifier {
     }
   }
 
-bool todasLeccionesCompletadas(
-  Subnivel subnivel, List<Leccion> leccionesCompletadas) {
-  // Verificar si todas las lecciones están completadas
-  bool todasCompletadas = subnivel.lecciones
-      .every((leccion) => leccionesCompletadas.contains(leccion));
+  bool todasLeccionesCompletadas(
+      Subnivel subnivel, List<Leccion> leccionesCompletadas,int currentNivelIndex) {
+    List<Leccion> leccionesSubnivel = subnivel.lecciones;
 
-  if (todasCompletadas) {
-    // Buscar el índice del subnivel en la lista de subniveles del nivel actual
-    //int currentIndex =
-       // niveles[currentNivelIndex].subniveles.indexOf(subnivel);
+    for (var leccion in leccionesSubnivel) {
+      if (!leccionesCompletadas.any((leccionCompletada) =>
+          leccionCompletada.identificador == leccion.identificador)) {
+        return false;
+      }
+    }
+    // Obtener el índice del subnivel actual en la lista de subniveles
+    int currentIndex = niveles![currentNivelIndex].subniveles.indexOf(subnivel);
 
     // Verificar si el subnivel actual no es el último de la lista
-    // if (currentIndex < niveles[currentNivelIndex].subniveles.length - 1) {
-    //   // Obtener el siguiente subnivel de la lista
-    //   Subnivel siguienteSubnivel =
-    //       niveles[currentNivelIndex].subniveles[currentIndex + 1];
+    if (currentIndex < niveles![currentNivelIndex].subniveles.length - 1) {
+      // Obtener el siguiente subnivel de la lista
+      Subnivel siguienteSubnivel =
+          niveles![currentNivelIndex].subniveles[currentIndex + 1];
 
-    //   // Asignar el valor de subnivelAprobado = true al siguiente subnivel si es nulo
-    //   siguienteSubnivel.subnivelAprobado ??= true;
-    // }
-    //return true;
+      // Asignar el valor de subnivelAprobado = true al siguiente subnivel
+      siguienteSubnivel.subnivelAprobado = true;
+    }
+    return true;
   }
-  return false;
-}
 
   Future<void> obtenerNivelesDesdeFirebase() async {
     try {

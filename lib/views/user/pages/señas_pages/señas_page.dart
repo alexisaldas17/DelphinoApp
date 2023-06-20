@@ -199,12 +199,13 @@
 //   );
 // }
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:delphino_app/views/pages/se%C3%B1as_pages/glosario_page.dart';
 import 'package:delphino_app/views/word_popup.dart';
 import 'package:flutter/material.dart';
 
-import '../../../controllers/diccionario_controller.dart';
-import '../../../models/diccionario.dart';
+import '../../../../controllers/diccionario_controller.dart';
+import '../../../../models/diccionario.dart';
+import 'glosario_page.dart';
+
 
 
 class SeniasPage extends StatefulWidget {
@@ -243,6 +244,7 @@ Future<void> _loadWords() async {
       if (data != null) {
         return Diccionario(
           id: data['id'] ?? '',
+          uid: data['uid'] ?? '',
           palabra: data['palabra'] ?? '',
           senia: data['seña'] ?? '',
           imagen: data['imagen'] ?? '',
@@ -252,6 +254,7 @@ Future<void> _loadWords() async {
         // Handle the case where data is null
         return Diccionario(
           id: '',
+          uid: '',
           palabra: '',
           senia: '',
           imagen: '',
