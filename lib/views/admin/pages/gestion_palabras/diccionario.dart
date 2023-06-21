@@ -39,14 +39,13 @@ class _EditarDiccionarioState extends State<EditarDiccionario> {
 
         if (data != null) {
           return Diccionario(
-            id: data['id'] ?? '',
-            uid: data['uid'] ?? '',
-            palabra: data['palabra'] ?? '',
-            senia: data['seña'] ?? '',
-            imagen: data['imagen'] ?? '',
-            categoria: data['categoria'] ?? '',
-            descripcion: data['descripcion'] ?? ''
-          );
+              id: data['id'] ?? '',
+              uid: data['uid'] ?? '',
+              palabra: data['palabra'] ?? '',
+              senia: data['seña'] ?? '',
+              imagen: data['imagen'] ?? '',
+              categoria: data['categoria'] ?? '',
+              descripcion: data['descripcion'] ?? '');
         } else {
           // Handle the case where data is null
           return Diccionario(
@@ -139,12 +138,15 @@ class _EditarDiccionarioState extends State<EditarDiccionario> {
             for (Diccionario word in words)
               ListTile(
                 title: Text(word.palabra),
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => EditarPalabra(palabra: word)),
                   );
+                  setState(() {
+                    _loadWords();
+                  });
                 },
               ),
           ],

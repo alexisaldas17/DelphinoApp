@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as path;
 import '../models/categoria.dart';
 
@@ -51,6 +52,66 @@ class PalabrasController {
     }
   }
 
+  Future<bool> actualizarPalabra(String uid, String palabra,
+      PlatformFile videoPath, File imagePath, String descripcion) async {
+    String imagenUrl = '';
+    String videoUrl = '';
+
+    if (imagePath.path != null && imagePath.path.isNotEmpty) {
+      imagenUrl = await guardarImagen(imagePath);
+    }
+
+if (videoPath.path != null && videoPath.path!.isNotEmpty) {
+        videoUrl = await guardarVideo(videoPath);
+    }
+
+    try {
+      final docRef = palabrasCollection.doc(uid);
+      if (imagenUrl.isNotEmpty && videoUrl.isNotEmpty) {
+        await docRef.update({
+          'palabra': palabra,
+          'seña': videoUrl,
+          'imagen': imagenUrl,
+          'descripcion': descripcion,
+        });
+      } else if (imagenUrl.isNotEmpty) {
+        await docRef.update({
+          'palabra': palabra,
+          'imagen': imagenUrl,
+          'descripcion': descripcion,
+        });
+      } else if (videoUrl.isNotEmpty) {
+        await docRef.update({
+          'palabra': palabra,
+          'seña': videoUrl,
+          'descripcion': descripcion,
+        });
+      } else {
+         await docRef.update({
+          'palabra': palabra,
+          'descripcion': descripcion,
+        });
+         // Si no se cambió ni la imagen ni el video, retorna false
+      }
+
+      return true;
+    } catch (error) {
+      // Si ocurre algún error durante la actualización, puedes manejarlo aquí
+      print('Error al actualizar la palabra: $error');
+      return false;
+    }
+  }
+
+  Future<void> eliminarArchivoFirestorage(String? url) async {
+    Reference ref = FirebaseStorage.instance.refFromURL(url!);
+    try {
+      await ref.delete();
+      print('Imagen eliminada exitosamente.');
+    } catch (e) {
+      print('Error al eliminar la imagen: $e');
+    }
+  }
+
   Future<bool> agregarPalabra(String palabra, String categoria,
       PlatformFile videoPath, File imagePath, String descripcion) async {
     try {
@@ -60,13 +121,19 @@ class PalabrasController {
       palabra = palabra.substring(0, 1).toUpperCase() + palabra.substring(1);
       // bool palabraNoRepetida = await verificarPalabra(palabra)
       if (imagenUrl.isNotEmpty && videoUrl.isNotEmpty) {
-        await palabrasCollection.add({
+        final docRef = await palabrasCollection.add({
           'palabra': palabra,
           'categoria': categoria,
           'seña': videoUrl,
           'imagen': imagenUrl,
           'descripcion': descripcion,
+          'uid': null, // Placeholder para el UID, se actualizará a continuación
         });
+
+        final uid = docRef.id; // Obtener el UID del documento creado
+
+        // Actualizar el campo "uid" con el valor correspondiente
+        await docRef.update({'uid': uid});
 
         return true;
       }

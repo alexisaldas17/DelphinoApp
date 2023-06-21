@@ -22,6 +22,7 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
   PlatformFile _video = PlatformFile(name: '', size: 0);
   TextEditingController _wordController = TextEditingController();
   PalabrasController palabrasController = PalabrasController();
+  TextEditingController _descripcionController = TextEditingController();
   String _description = '';
   bool _palabraError = false;
   bool _categoriaError = false;
@@ -33,6 +34,7 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
   @override
   void dispose() {
     _wordController.dispose();
+    _descripcionController.dispose();
     super.dispose();
   }
 
@@ -90,6 +92,7 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
 
   Future<void> _saveWord() async {
     String palabra = _wordController.text;
+    String descripcion = _descripcionController.text;
     // Validar si los campos obligatorios están completos
     if (palabra.isEmpty ||
         _selectedCategory.isEmpty ||
@@ -148,7 +151,7 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
       _selectedCategory,
       _video,
       _imagen,
-      _description,
+      descripcion,
     );
 
     setState(() {
@@ -300,6 +303,7 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
                     ),
                   ),
             TextField(
+              controller: _descripcionController,
               maxLines: null,
               decoration: InputDecoration(labelText: 'Descripción'),
             ),
