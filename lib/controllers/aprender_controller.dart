@@ -1,20 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delphino_app/models/preguntas.dart';
 import 'package:delphino_app/models/subniveles.dart';
-import 'package:delphino_app/providers/aprender.provider.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 import '../models/lecciones.dart';
 import '../models/niveles.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AprenderController {
   //AprenderProvider _aprenderProvider;
-
   //AprenderController(this._aprenderProvider);
+
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final _nivelesStreamController = StreamController<List<Nivel>>();
   Stream<List<Nivel>> get nivelesStream => _nivelesStreamController.stream;
@@ -50,7 +45,7 @@ class AprenderController {
     // AprenderProvider aprenderProvider =
     //       Provider.of<AprenderProvider>(context, listen: false);
     // aprenderProvider.setNivel(niveles);
-    
+
     return niveles;
     // Comparar los datos obtenidos de Firebase con los datos almacenados en la caché
     // if (!areEqual(cachedData, niveles)) {
@@ -90,103 +85,112 @@ class AprenderController {
   }
 
   Future<List<Nivel>> fetchNivelesFromFirebase() async {
-    CollectionReference nivelesCollection =
-        FirebaseFirestore.instance.collection('niveles');
+    try {
+      CollectionReference nivelesCollection =
+          FirebaseFirestore.instance.collection('niveles');
 
-    QuerySnapshot nivelesSnapshot = await nivelesCollection.get();
-    List<QueryDocumentSnapshot> nivelesDocs = nivelesSnapshot.docs;
-    nivelesDocs.sort((a, b) =>
-        a['id'].compareTo(b['id'])); // Ordenar los documentos por el campo "id"
-    List<Nivel> niveles = [];
+      QuerySnapshot nivelesSnapshot = await nivelesCollection.get();
+      List<QueryDocumentSnapshot> nivelesDocs = nivelesSnapshot.docs;
+      nivelesDocs.sort((a, b) => a['id'].compareTo(b['id']));
+      List<Nivel> niveles = [];
 
-    for (QueryDocumentSnapshot nivelDoc in nivelesDocs) {
-      int nivelId = nivelDoc['id']; // Obtener el campo "id"
-      String nivelNombre = nivelDoc['nombre'];
-      List<Subnivel> subniveles = [];
-      ////////////SUBNIVELES///////////
+      for (QueryDocumentSnapshot nivelDoc in nivelesDocs) {
+        int nivelId = nivelDoc['id'] ?? 0; // Obtener el campo "id"
+        String nivelNombre = nivelDoc['nombre'] ?? '';
+        List<Subnivel> subniveles = [];
 
-      CollectionReference subnivelesCollection =
-          nivelDoc.reference.collection('subniveles');
-      QuerySnapshot subnivelesSnapshot = await subnivelesCollection.get();
-      List<QueryDocumentSnapshot> subnivelesDocs = subnivelesSnapshot.docs;
-      subnivelesDocs.sort((a, b) => a['id'].compareTo(b['id']));
-      for (QueryDocumentSnapshot subnivelDoc in subnivelesDocs) {
-        int subnivelId = subnivelDoc['id'];
-        String urlImage = subnivelDoc['imagen'];
-        bool subnivelAprobado = subnivelDoc['subnivelAprobado'];
-        String subnivelNombre = subnivelDoc['nombre'];
-        List<Leccion> lecciones = [];
+        ////////////SUBNIVELES///////////
+        CollectionReference subnivelesCollection =
+            nivelDoc.reference.collection('subniveles');
+        QuerySnapshot subnivelesSnapshot = await subnivelesCollection.get();
+        List<QueryDocumentSnapshot> subnivelesDocs = subnivelesSnapshot.docs;
+        subnivelesDocs.sort((a, b) => a['id'].compareTo(b['id']));
+        for (QueryDocumentSnapshot subnivelDoc in subnivelesDocs) {
+          int subnivelId = subnivelDoc['id'] ?? 0;
+          String urlImage = subnivelDoc['imagen'] ?? '';
+          bool subnivelAprobado = subnivelDoc['subnivelAprobado'] ?? false;
+          String subnivelNombre = subnivelDoc['nombre'] ?? '';
+          List<Leccion> lecciones = [];
 
-        ////////////LECCIONES///////////
+          ////////////LECCIONES///////////
+          CollectionReference leccionesCollection =
+              subnivelDoc.reference.collection('lecciones');
+          QuerySnapshot leccionesSnapshot = await leccionesCollection.get();
+          List<QueryDocumentSnapshot> leccionesDocs = leccionesSnapshot.docs;
+          leccionesDocs.sort((a, b) => a['id'].compareTo(b['id']));
+          for (QueryDocumentSnapshot leccionDoc in leccionesDocs) {
+            // Obtener los datos de la lección y crear un objeto Leccion
+            int idLeccion = leccionDoc['id'] ?? 0;
+            String leccionNombre = leccionDoc['nombre'] ?? '';
+            String identificador = leccionDoc['identificador'] ?? '';
+            String imageUrl = leccionDoc['imageUrl']?.toString() ?? '';
 
-        CollectionReference leccionesCollection =
-            subnivelDoc.reference.collection('lecciones');
-        QuerySnapshot leccionesSnapshot = await leccionesCollection.get();
-        List<QueryDocumentSnapshot> leccionesDocs = leccionesSnapshot.docs;
-        leccionesDocs.sort((a, b) => a['id'].compareTo(b['id']));
-        for (QueryDocumentSnapshot leccionDoc in leccionesDocs) {
-          // Obtener los datos de la lección y crear un objeto Leccion
-          int idLeccion = leccionDoc['id'];
-          String leccionNombre = leccionDoc['nombre'];
-          String identificador = leccionDoc['identificador'];
+            CollectionReference preguntasCollection =
+                leccionDoc.reference.collection('preguntas');
+            QuerySnapshot preguntasSnapshot = await preguntasCollection.get();
+            List<QueryDocumentSnapshot> preguntasDocs = preguntasSnapshot.docs;
 
-          CollectionReference preguntasCollection =
-              leccionDoc.reference.collection('preguntas');
-          QuerySnapshot preguntasSnapshot = await preguntasCollection.get();
-          List<QueryDocumentSnapshot> preguntasDocs = preguntasSnapshot.docs;
+            preguntasDocs.sort((a, b) => a['id'].compareTo(b['id']));
 
-          preguntasDocs.sort((a, b) => a['id'].compareTo(b['id']));
+            //////////////PREGUNTAS////////////////
+            List<Pregunta> preguntas = [];
+            for (QueryDocumentSnapshot preguntaDoc in preguntasDocs) {
+              List<String> opciones = [];
+              List<dynamic> opcionesList = [];
+              int idPregunta = preguntaDoc['id'];
+              //String idLeccion = leccionDoc['identificador'];
+              String enunciadoPregunta = preguntaDoc['enunciado'] ?? '';
+              String imagenPregunta = preguntaDoc['imagen'] ?? '';
+              int respuesta = preguntaDoc['respuesta'] ?? '';
+              String tipo = preguntaDoc['tipo'] ?? '';
+              opcionesList = preguntaDoc['opciones'] ?? [];
+              opciones.addAll(opcionesList.cast<String>());
 
-          //////////////PREGUNTAS////////////////
-          List<Pregunta> preguntas = [];
-
-          for (QueryDocumentSnapshot preguntaDoc in preguntasDocs) {
-            List<String> opciones = [];
-            List<dynamic> opcionesList = [];
-            int idPregunta = preguntaDoc['id'];
-            //String idLeccion = leccionDoc['identificador'];
-            String enunciadoPregunta = preguntaDoc['enunciado'];
-            String imagenPregunta = preguntaDoc['imagen'];
-            int respuesta = preguntaDoc['respuesta'];
-            String tipo = preguntaDoc['tipo'];
-
-            opcionesList = preguntaDoc['opciones'];
-            opciones.addAll(opcionesList.cast<String>());
-
-            Pregunta pregunta = Pregunta(
+              Pregunta pregunta = Pregunta(
                 id: idPregunta,
                 // idLeccion: idLeccion,
                 imagen: imagenPregunta,
                 enunciado: enunciadoPregunta,
                 opciones: opciones,
                 respuestaCorrecta: respuesta,
-                tipo: tipo);
+                tipo: tipo,
+              );
 
-            preguntas.add(pregunta);
-          }
-          Leccion leccion = Leccion(
+              preguntas.add(pregunta);
+            }
+            Leccion leccion = Leccion(
               id: idLeccion,
               nombre: leccionNombre,
               preguntas: preguntas,
-              identificador: identificador);
-          lecciones.add(leccion);
-        }
+              imageUrl: imageUrl,
+              identificador: identificador,
+            );
+            lecciones.add(leccion);
+          }
 
-        Subnivel subnivel = Subnivel(
+          Subnivel subnivel = Subnivel(
             id: subnivelId,
             nombre: subnivelNombre,
             lecciones: lecciones,
             urlImage: urlImage,
-            subnivelAprobado: subnivelAprobado);
-        subniveles.add(subnivel);
+            subnivelAprobado: subnivelAprobado,
+          );
+          subniveles.add(subnivel);
+        }
+
+        Nivel nivel = Nivel(
+          id: nivelId,
+          nombre: nivelNombre,
+          subniveles: subniveles,
+        );
+        niveles.add(nivel);
       }
 
-      Nivel nivel =
-          Nivel(id: nivelId, nombre: nivelNombre, subniveles: subniveles);
-      niveles.add(nivel);
+      return niveles;
+    } catch (error) {
+      print('Error al obtener los niveles desde Firebase: $error');
+      return []; // Devolver una lista vacía en caso de error
     }
-
-    return niveles;
   }
 
   String serializeNiveles(List<Nivel> niveles) {

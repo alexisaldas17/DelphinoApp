@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:delphino_app/views/user/pages/perfil_pages/perfil_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/usuario.dart';
+import '../../../../providers/user.provider.dart';
 import '../../../../theme.notifier.dart';
 
-
 class EditProfilePage extends StatefulWidget {
-  final User user;
+  final Usuario user;
 
   const EditProfilePage({Key? key, required this.user}) : super(key: key);
 
@@ -22,8 +25,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    _displayNameController =
-        TextEditingController(text: widget.user.displayName);
+    _displayNameController = TextEditingController(text: widget.user.nombre);
     _emailController = TextEditingController(text: widget.user.email);
   }
 
@@ -34,22 +36,48 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.dispose();
   }
 
-  void _saveChanges() {
-    // Aquí puedes obtener los valores editados de los campos de texto y guardar los cambios en tu sistema
+  void _saveChanges() async {
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     String newDisplayName = _displayNameController.text;
-    String newEmail = _emailController.text;
 
-    // Ejemplo de cómo actualizar los atributos del usuario en Firebase Authentication
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-      currentUser.updateDisplayName(newDisplayName);
-      currentUser.updateEmail(newEmail);
+      try {
+        // Actualizar el displayName en Firebase Authentication
+        await currentUser.updateDisplayName(newDisplayName);
+
+        // Obtener la referencia al documento del usuario en la colección "usuarios"
+        String userId = currentUser.uid;
+        DocumentReference userRef =
+            FirebaseFirestore.instance.collection('usuarios').doc(userId);
+
+        // Actualizar el documento en Firebase Firestore
+        await userRef.update({
+          'nombre': newDisplayName,
+        });
+
+        // Actualizar el usuario en el estado
+        userProvider.user!.nombre = newDisplayName;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Los cambios se guardaron correctamente.'),
+          ),
+        );
+        // Mostrar mensaje de éxito o realizar otras acciones necesarias
+        print('Los cambios se guardaron correctamente.');
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al guardar los cambios: $error'),
+          ),
+        );
+        // Mostrar mensaje de error o realizar acciones de manejo de errores
+        print('Error al guardar los cambios: $error');
+      }
     }
 
-    // También puedes guardar los cambios en tu propio sistema de base de datos, si lo tienes
-
-    // Después de guardar los cambios, puedes cerrar la pantalla y regresar al perfil
-    Navigator.pop(context);
+    Navigator.pop(context, newDisplayName);
   }
 
   void _toggleTheme() {
@@ -86,21 +114,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ElevatedButton(
               onPressed: _saveChanges,
               child: Text('Guardar cambios'),
+               style: ButtonStyle(
+              minimumSize:
+                  MaterialStateProperty.all<Size>(Size(double.infinity, 50)),
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(Colors.blue[500]!),
+            ),
             ),
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _toggleTheme,
-              child: Text('Cambiar a tema oscuro'),
-            ),
+            // ElevatedButton(
+            //   onPressed: _toggleTheme,
+            //   child: Text('Cambiar a tema oscuro'),
+            // ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          themeNotifier.toggleTheme();
-        },
-        child: Icon(Icons.color_lens),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     themeNotifier.toggleTheme();
+      //   },
+      //   child: Icon(Icons.color_lens),
+      // ),
     );
   }
 }

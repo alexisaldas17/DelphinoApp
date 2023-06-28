@@ -1,4 +1,4 @@
-import 'package:delphino_app/views/auth_screens/login_screen.dart';
+import 'package:delphino_app/views/auth_screens/loginEstudiante_screen.dart';
 import 'package:delphino_app/views/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -17,28 +17,28 @@ class SplashScreen extends StatelessWidget {
         ),
       );
     });
+
     return Scaffold(
       body: Center(
-        child: AspectRatio(
-          aspectRatio: 16 / 9, // Ajusta el valor según la relación de aspecto deseada
-          child: Container(
-            width: 200, // Ajusta el ancho deseado
-            height: 200, // Ajusta la altura deseada
-            // decoration: BoxDecoration(
-            //   image: DecorationImage(
-            //     image: AssetImage('assets/splash.jpg'),
-            //     fit: BoxFit.cover,
-            //   ),
-            // ),
-            child: FittedBox(
-            fit: BoxFit.contain,
-            child: Image.asset('assets/splash.jpg'),
-          ),
-          ),
-          
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AspectRatio(
+              aspectRatio: 16 / 9, // Ajusta el valor según la relación de aspecto deseada
+              child: Container(
+                width: 200, // Ajusta el ancho deseado
+                height: 200, // Ajusta la altura deseada
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Image.asset('assets/splash.jpg'),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            CircularProgressIndicator(), // Círculo de progreso
+          ],
         ),
       ),
     );
-    
   }
 }

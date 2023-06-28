@@ -41,6 +41,10 @@ dependencies:
   video_player: ^2.2.5
   file_picker: ^4.2.0
   image_picker: ^0.8.4+4
+  animated_text_kit: ^4.2.2
+  carousel_slider: ^4.2.1
+ 
+
 
 
 
@@ -50,6 +54,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: ^6.0.5
   firebase_storage: ^11.2.3
+  fluro: ^2.0.5
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +81,9 @@ flutter:
    - assets/google_logo.png
    - assets/images/default_image.png
    - assets/splash.jpg
+   - assets/welcome1.png
+   - assets/welcome2.png
+   - assets/logo.png
    - assets/facebook_logo.png
    - assets/apple_iphone.png
    - assets/welcome.JPG

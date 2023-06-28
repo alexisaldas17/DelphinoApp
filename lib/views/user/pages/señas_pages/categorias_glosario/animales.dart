@@ -39,7 +39,7 @@ class _AnimalesPageState extends State<AnimalesPage> {
   Widget build(BuildContext context) {
     return FutureBuilder<List<DocumentSnapshot>>(
       future: _diccionarioService
-          .getWordsByCategory('animales'), // Filtrar por la categoría 'frutas'
+          .getWordsByCategory('animales'), 
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator(); // Muestra un indicador de carga mientras se obtienen los datos

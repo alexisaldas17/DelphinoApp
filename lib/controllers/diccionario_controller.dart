@@ -4,14 +4,6 @@ class DiccionarioController {
   final CollectionReference _wordsCollection =
       FirebaseFirestore.instance.collection('diccionario');
 
-  // Stream<List<DocumentSnapshot>>? getWords() {
-  //   try {
-  //     return _wordsCollection.snapshots().map((snapshot) => snapshot.docs);
-  //   } catch (e) {
-  //     print('Error al obtener los usuarios: $e');
-  //     return null;
-  //   }
-  // }
   Future<List<DocumentSnapshot>> getWords() async {
     try {
       QuerySnapshot snapshot = await _wordsCollection.get();

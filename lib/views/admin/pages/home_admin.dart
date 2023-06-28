@@ -1,3 +1,6 @@
+import 'package:delphino_app/controllers/auth_controller.dart';
+import 'package:delphino_app/views/auth_screens/loginAdmin_screen.dart';
+import 'package:delphino_app/views/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'gestion_palabras/agregar_palabra.dart';
@@ -34,121 +37,145 @@ class _HomeAdministradorState extends State<HomeAdministrador> {
         ),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Menú',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ExpansionTile(
+                    title: Text('Gestionar Palabras'),
+                    children: [
+                      ListTile(
+                        title: Text('Agregar Palabra'),
+                        onTap: () {
+                          // Lógica para manejar la selección de la subopción 1
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AgregarPalabra()),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        title: Text('Editar Palabra'),
+                        onTap: () {
+                          Navigator.pop(context);
+
+                          // Lógica para manejar la selección de la subopción 2
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditarDiccionario()),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        title: Text('Borrar Palabra'),
+                        onTap: () {
+                          // Lógica para manejar la selección de la subopción 2
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                  ExpansionTile(
+                    title: Text('Gestionar Glosario'),
+                    children: [
+                      ListTile(
+                        title: Text('Categoria ABC'),
+                        onTap: () {
+                          // Lógica para manejar la selección de la subopción 1
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text('Categoria Números'),
+                        onTap: () {
+                          // Lógica para manejar la selección de la subopción 2
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text('Categoria Colores'),
+                        onTap: () {
+                          // Lógica para manejar la selección de la subopción 2
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text('Categoria Animales'),
+                        onTap: () {
+                          // Lógica para manejar la selección de la subopción 2
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text('Categoria Frutas'),
+                        onTap: () {
+                          // Lógica para manejar la selección de la subopción 2
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text('Categoria Objetos'),
+                        onTap: () {
+                          // Lógica para manejar la selección de la subopción 2
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text('Categoria Días'),
+                        onTap: () {
+                          // Lógica para manejar la selección de la subopción 2
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text('Categoria Meses'),
+                        onTap: () {
+                          // Lógica para manejar la selección de la subopción 2
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              child: Text(
-                'Menú',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
             ),
-            ExpansionTile(
-              title: Text('Gestionar Palabras'),
-              children: [
-                ListTile(
-                  title: Text('Agregar Palabra'),
-                  onTap: () {
-                    // Lógica para manejar la selección de la subopción 1
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AgregarPalabra()),
-                    );
-                  },
-                ),
-                ListTile(
-                  title: Text('Editar Palabra'),
-                  onTap: () {
-                    Navigator.pop(context);
+            ListTile(
+              title: Text('Cerrar Sesión'),
+              leading: Icon(Icons.logout),
+              onTap: () {
+                AuthController authController = AuthController();
+                authController.signOut();
 
-                    // Lógica para manejar la selección de la subopción 2
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EditarDiccionario()),
-                    );
-                  },
-                ),
-                ListTile(
-                  title: Text('Borrar Palabra'),
-                  onTap: () {
-                    // Lógica para manejar la selección de la subopción 2
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => WelcomePage()),
+                );
+                // Lógica para cerrar sesión
+              },
             ),
-
-            ExpansionTile(
-              title: Text('Gestionar Glosario'),
-              children: [
-                ListTile(
-                  title: Text('Categoria ABC'),
-                  onTap: () {
-                    // Lógica para manejar la selección de la subopción 1
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Categoria Números'),
-                  onTap: () {
-                    // Lógica para manejar la selección de la subopción 2
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Categoria Colores'),
-                  onTap: () {
-                    // Lógica para manejar la selección de la subopción 2
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Categoria Animales'),
-                  onTap: () {
-                    // Lógica para manejar la selección de la subopción 2
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Categoria Frutas'),
-                  onTap: () {
-                    // Lógica para manejar la selección de la subopción 2
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Categoria Objetos'),
-                  onTap: () {
-                    // Lógica para manejar la selección de la subopción 2
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Categoria Días'),
-                  onTap: () {
-                    // Lógica para manejar la selección de la subopción 2
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Categoria Meses'),
-                  onTap: () {
-                    // Lógica para manejar la selección de la subopción 2
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-
-            // Agrega más opciones de menú según tus necesidades
           ],
         ),
       ),

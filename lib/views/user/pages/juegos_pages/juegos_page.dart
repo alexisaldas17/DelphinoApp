@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'hangman_game.dart';
+import 'sopaseñas_game.dart';
 
 class JuegosPage extends StatefulWidget {
   @override
@@ -81,18 +82,3 @@ class AhorcadoPage extends StatelessWidget {
   }
 }
 
-// Nueva página SopaDeSenasPage
-class SopaDeSenasPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Sopa de Señas'),
-      ),
-      // Contenido de la página SopaDeSenasPage
-      body: Center(
-        child: Text('Contenido de la página Sopa de Señas'),
-      ),
-    );
-  }
-}

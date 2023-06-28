@@ -52,6 +52,21 @@ class PalabrasController {
     }
   }
 
+  Future<bool> eliminarPalabra(
+      String uid, String imagenUrl, String videoUrl) async {
+    try {
+      if(imagenUrl != null && imagenUrl.isNotEmpty)
+      eliminarArchivoFirestorage(imagenUrl);
+      if(videoUrl != null && videoUrl.isNotEmpty)
+      eliminarArchivoFirestorage(videoUrl);
+      await palabrasCollection.doc(uid).delete();
+      return true;
+    } catch (error) {
+      print('Error al eliminar la palabra: $error');
+      return false;
+    }
+  }
+
   Future<bool> actualizarPalabra(String uid, String palabra,
       PlatformFile videoPath, File imagePath, String descripcion) async {
     String imagenUrl = '';
@@ -61,8 +76,8 @@ class PalabrasController {
       imagenUrl = await guardarImagen(imagePath);
     }
 
-if (videoPath.path != null && videoPath.path!.isNotEmpty) {
-        videoUrl = await guardarVideo(videoPath);
+    if (videoPath.path != null && videoPath.path!.isNotEmpty) {
+      videoUrl = await guardarVideo(videoPath);
     }
 
     try {
@@ -87,11 +102,11 @@ if (videoPath.path != null && videoPath.path!.isNotEmpty) {
           'descripcion': descripcion,
         });
       } else {
-         await docRef.update({
+        await docRef.update({
           'palabra': palabra,
           'descripcion': descripcion,
         });
-         // Si no se cambió ni la imagen ni el video, retorna false
+        // Si no se cambió ni la imagen ni el video, retorna false
       }
 
       return true;

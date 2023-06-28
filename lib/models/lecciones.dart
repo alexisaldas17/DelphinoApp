@@ -3,18 +3,19 @@ import 'package:delphino_app/models/preguntas.dart';
 class Leccion {
   List<Pregunta> preguntas;
   int? id;
+  String? imageUrl;
   String? identificador;
   bool? leccionCompletada;
 
   String nombre;
-  Leccion({
-    required this.nombre,
-    this.id,
-    required this.preguntas,
-    this.identificador
-  });
+  Leccion(
+      {required this.nombre,
+      this.id,
+      this.imageUrl,
+      required this.preguntas,
+      this.identificador});
 
- Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap() {
     final map = {
       'nombre': nombre,
       'leccionCompletada': leccionCompletada,

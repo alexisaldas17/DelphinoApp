@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../i18n/LocalizedMessages .dart';
 import '../models/subniveles.dart';
@@ -31,6 +32,8 @@ class AuthController with ChangeNotifier {
         idToken: googleAuth.idToken,
       );
 
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
       // Inicia sesión con la credencial en Firebase
       final UserCredential userCredential =
           await _firebaseAuth.signInWithCredential(credential);
@@ -41,7 +44,7 @@ class AuthController with ChangeNotifier {
       final DocumentReference userDocument =
           usersCollection.doc(userCredential.user!.uid);
 
-// Comprueba si el documento del usuario ya existe
+      // Comprueba si el documento del usuario ya existe
       final DocumentSnapshot userSnapshot = await userDocument.get();
       if (!userSnapshot.exists) {
         // El documento del usuario no existe, crea uno nuevo
@@ -132,7 +135,9 @@ class AuthController with ChangeNotifier {
               final int subnivelId = subnivelCompletado.id;
               final Subnivel? subnivel = aprenderProvider.niveles
                   ?.expand((nivel) => nivel.subniveles)
-                  .firstWhere((subnivel) => subnivel.id == subnivelId);
+                  .firstWhere((subnivel) => subnivel.id == subnivelId,
+                      orElse: () =>
+                          Subnivel(id: 0, lecciones: [], urlImage: ''));
 
               if (subnivel != null) {
                 subnivel.subnivelAprobado = true;
@@ -211,50 +216,50 @@ class AuthController with ChangeNotifier {
     }
   }
 
-  Future<UserCredential?> signIn(
-      BuildContext context, String email, String password) async {
-    try {
-      UserCredential userCredential =
-          await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+  // Future<UserCredential?> signIn(
+  //     BuildContext context, String email, String password) async {
+  //   try {
+  //     UserCredential userCredential =
+  //         await _firebaseAuth.signInWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
 
-      // Obtener el documento del usuario utilizando Firestore
-      DocumentSnapshot userDocument = await FirebaseFirestore.instance
-          .collection('usuarios')
-          .doc(userCredential.user!.uid)
-          .get();
+  //     // Obtener el documento del usuario utilizando Firestore
+  //     DocumentSnapshot userDocument = await FirebaseFirestore.instance
+  //         .collection('usuarios')
+  //         .doc(userCredential.user!.uid)
+  //         .get();
 
-      // Aquí puedes acceder a los datos del documento del usuario
-      if (userDocument.exists) {
-        Map<String, dynamic> userData =
-            userDocument.data() as Map<String, dynamic>;
-        // Hacer algo con los datos del usuario
-        // Mapear los datos del documento en un objeto Usuario
-        Usuario usuario = Usuario(
-          nombre: userData['nombre'] ?? '',
-          uid: userData['id'] ?? '',
-          email: userData['email'] ?? '',
-          rol: userData['rol'] ?? '',
-        );
+  //     // Aquí puedes acceder a los datos del documento del usuario
+  //     if (userDocument.exists) {
+  //       Map<String, dynamic> userData =
+  //           userDocument.data() as Map<String, dynamic>;
+  //       // Hacer algo con los datos del usuario
+  //       // Mapear los datos del documento en un objeto Usuario
+  //       Usuario usuario = Usuario(
+  //         nombre: userData['nombre'] ?? '',
+  //         uid: userData['id'] ?? '',
+  //         email: userData['email'] ?? '',
+  //         rol: userData['rol'] ?? '',
+  //       );
 
-        final UserProvider userProvider =
-            Provider.of<UserProvider>(context, listen: false);
-        userProvider.setUser(usuario);
-        print('Datos del usuario: $userData');
-      } else {
-        // El documento del usuario no existe
-        print('El documento del usuario no existe');
-      }
+  //       final UserProvider userProvider =
+  //           Provider.of<UserProvider>(context, listen: false);
+  //       userProvider.setUser(usuario);
+  //       print('Datos del usuario: $userData');
+  //     } else {
+  //       // El documento del usuario no existe
+  //       print('El documento del usuario no existe');
+  //     }
 
-      return userCredential;
-    } catch (e) {
-      // Manejo de errores
-      print('Error durante el inicio de sesión: $e');
-      return null;
-    }
-  }
+  //     return userCredential;
+  //   } catch (e) {
+  //     // Manejo de errores
+  //     print('Error durante el inicio de sesión: $e');
+  //     return null;
+  //   }
+  // }
 
   Future<void> signOut() async {
     try {
@@ -263,6 +268,8 @@ class AuthController with ChangeNotifier {
 
       // Cerrar sesión con Google
       await _googleSignIn.signOut();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', false);
     } catch (e) {
       // Manejo de errores
       _errorMessage = e.toString();
