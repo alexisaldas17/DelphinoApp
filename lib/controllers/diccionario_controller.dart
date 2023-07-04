@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:delphino_app/models/categoria.dart';
 
 class DiccionarioController {
   final CollectionReference _wordsCollection =
@@ -57,5 +58,26 @@ class DiccionarioController {
       print('Error obteniendo palabras por categoría: $e');
       return [];
     }
+  }
+
+  Future<List<Categoria>> getAllCategories() async {
+    List<Categoria> categorias = [];
+
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('categorias').get();
+
+      querySnapshot.docs.forEach((doc) {
+        int id = doc['id'] as int;
+        String nombre = doc['nombre'] as String;
+
+        Categoria categoria = Categoria(id: id, nombre: nombre);
+        categorias.add(categoria);
+      });
+    } catch (e) {
+      print('Error al obtener las categorías: $e');
+    }
+
+    return categorias;
   }
 }

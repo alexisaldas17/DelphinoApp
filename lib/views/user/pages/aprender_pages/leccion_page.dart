@@ -30,53 +30,61 @@ class _LeccionPageState extends State<LeccionPage> {
     return selectedOptionIndex != -1;
   }
 
-  void checkAnswer(int selectedOption) {
-    final pregunta = widget.preguntas[currentPage];
-    bool isAnswerCorrect = pregunta.respuestaCorrecta == selectedOption;
+void checkAnswer(int selectedOption) {
+  final pregunta = widget.preguntas[currentPage];
+  bool isAnswerCorrect = pregunta.respuestaCorrecta == selectedOption;
+
+  if (mounted) {
     setState(() {
       selectedOptionIndex = selectedOption;
       questionResults.add(isAnswerCorrect);
     });
+  }
 
-    if (currentPage < widget.preguntas.length - 1) {
-      if (isAnswerCorrect) {
-        showCorrectToast();
-      } else {
-        showIncorrectToast();
-      }
+  if (currentPage < widget.preguntas.length - 1) {
+    if (isAnswerCorrect) {
+      showCorrectToast();
+    } else {
+      showIncorrectToast();
+    }
 
-      Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 3), () {
+      if (mounted) {
         // Avanzar a la siguiente pregunta
         setState(() {
           currentPage++;
           progress = (currentPage + 1) / widget.preguntas.length;
           selectedOptionIndex = -1; // Reiniciar el estado de selección
         });
-      });
-    } else {
-      if (isAnswerCorrect) {
-        showCorrectToast();
-      } else {
-        showIncorrectToast();
       }
+    });
+  } else {
+    if (isAnswerCorrect) {
+      showCorrectToast();
+    } else {
+      showIncorrectToast();
+    }
 
-      Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 3), () {
+      if (mounted) {
         // Finalizar la lección después de mostrar el mensaje de respuesta
         Navigator.pop(context);
 
         if (questionResults.every((result) => result == true)) {
           // Todas las respuestas son correctas
-           final UserProvider userProvider =
-            Provider.of<UserProvider>(context, listen: false);
+          final UserProvider userProvider =
+              Provider.of<UserProvider>(context, listen: false);
           userProvider.completarLeccion(widget.leccion);
           showCompletedToast();
         } else {
           // Al menos una respuesta es incorrecta
           showIncorrectAnswers();
         }
-      });
-    }
+      }
+    });
   }
+}
+
 
   void showCompletedToast() {
     Fluttertoast.showToast(
@@ -191,90 +199,142 @@ class _LeccionPageState extends State<LeccionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          LinearProgressIndicator(
-            minHeight: 20.0,
-            value: progress,
-          ),
-          Text(
-            progress <= 1.0
-                ? '${(progress * 100).toInt()}% Completado'
-                : 'Completado',
-            style: TextStyle(fontSize: 16),
-          ),
-          Expanded(
-            child: PageView.builder(
-              itemCount: widget.preguntas.length,
-              controller: PageController(
-                initialPage: currentPage,
+    return WillPopScope(
+      onWillPop: () async {
+        // Mostrar diálogo de confirmación al navegar hacia atrás
+        bool confirmExit = await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('¿Estás seguro?'),
+            content: Text('¿Deseas salir de la Lección?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false); // No confirmar la salida
+                },
+                child: Text('Cancelar'),
               ),
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                Pregunta pregunta = widget.preguntas[
-                    currentPage]; // Inicializar pregunta con la pregunta actual
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true); // Confirmar la salida
+                },
+                child: Text('Salir'),
+              ),
+            ],
+          ),
+        );
 
-                return Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Pregunta ${currentPage + 1}:',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+        return confirmExit ?? false;
+      },
+      child: Scaffold(
+        body: Column(
+          children: [
+            LinearProgressIndicator(
+              minHeight: 20.0,
+              value: progress,
+            ),
+            Text(
+              progress <= 1.0
+                  ? '${(progress * 100).toInt()}% Completado'
+                  : 'Completado',
+              style: TextStyle(fontSize: 16),
+            ),
+            Expanded(
+              child: PageView.builder(
+                itemCount: widget.preguntas.length,
+                controller: PageController(
+                  initialPage: currentPage,
+                ),
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  Pregunta pregunta = widget.preguntas[
+                      currentPage]; // Inicializar pregunta con la pregunta actual
+
+                  return Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Pregunta ${currentPage + 1}:',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        pregunta.enunciado,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      if (pregunta.tipo == 'opcion')
-                        Image.network(
-                          pregunta.imagen!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset(
-                              'assets/images/default_image.png',
-                              fit: BoxFit.cover,
-                            );
-                          },
+                        SizedBox(height: 10),
+                        Text(
+                          pregunta.enunciado,
+                          style: TextStyle(fontSize: 18),
                         ),
-                      SizedBox(height: 10),
-                      if (pregunta.tipo == 'opcion')
-                        buildOptions(pregunta.opciones),
-                      if (pregunta.tipo == 'imagen')
-                        buildImageOptions(pregunta.opciones),
-                      SizedBox(height: 10),
-                    ],
-                  ),
-                );
-              },
+                        if (pregunta.tipo == 'opcion')
+                          Image.network(
+                            pregunta.imagen!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                'assets/images/default_image.png',
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          ),
+                        SizedBox(height: 10),
+                        if (pregunta.tipo == 'opcion')
+                          buildOptions(pregunta.opciones),
+                        if (pregunta.tipo == 'imagen')
+                          buildImageOptions(pregunta.opciones),
+                        SizedBox(height: 10),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: isConfirmButtonEnabled()
-                ? () {
-                    checkAnswer(selectedOption);
-                  }
-                : null,
-            child: Text(
-              currentPage < widget.preguntas.length - 1
-                  ? 'CONFIRMAR'
-                  : 'FINALIZAR',
-              style: TextStyle(fontSize: 20),
-            ),
-            style: ButtonStyle(
-              minimumSize:
-                  MaterialStateProperty.all<Size>(Size(double.infinity, 50)),
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(Colors.blue[900]!),
-            ),
-          ),
-        ],
+     TextButton.icon(
+  onPressed: isConfirmButtonEnabled()
+      ? () {
+          checkAnswer(selectedOption);
+        }
+      : null,
+  icon: Icon(Icons.check),
+  label: Text(
+    currentPage < widget.preguntas.length - 1
+        ? 'CONFIRMAR'
+        : 'FINALIZAR',
+    style: TextStyle(fontSize: 20),
+  ),
+  style: ButtonStyle(
+    padding: MaterialStateProperty.all<EdgeInsets>(
+      EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+    ),
+    foregroundColor: MaterialStateProperty.resolveWith<Color>(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return Colors.grey as Color; // Explicit cast to Color
+        }
+        return Colors.white as Color; // Explicit cast to Color
+      },
+    ),
+    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return Colors.blueGrey as Color; // Explicit cast to Color
+        }
+        return Colors.blue[900] as Color; // Explicit cast to Color
+      },
+    ),
+    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+    ),
+  ),
+),
+                        SizedBox(height: 16),
+
+
+          ],
+        ),
       ),
     );
   }

@@ -1,8 +1,8 @@
+import 'package:delphino_app/controllers/diccionario_controller.dart';
 import 'package:flutter/material.dart';
 
-import 'categorias_glosario/abc.dart';
-import 'categorias_glosario/animales.dart';
-import 'categorias_glosario/frutas.dart';
+import '../../../../models/categoria.dart';
+import 'categoria_contenido.dart';
 
 class GlosarioPage extends StatefulWidget {
   @override
@@ -10,35 +10,32 @@ class GlosarioPage extends StatefulWidget {
 }
 
 class _GlosarioPageState extends State<GlosarioPage> {
-  List<Widget> contenidoCategorias = [
-    ABCPage(),
-    FrutasPage(), 
-    AnimalesPage(),
-    Text('Contenido Números'),
-    // ... Agrega más widgets para las demás categorías
-  ];
-  List<String> categorias = [
-    'ABC',
-    'Frutas',
-    'Animales',
-    'Números',
-    'Descripciones Físicas',
-    'Saludos',
-    'Verbos',
-    'Días',
-    'Meses',
-    'Familia',
-    'Colores',
-    'Expresiones',
-    'Objetos',
-    'Preguntas',
-    'Adjetivos',
-    'Preposiciones',
-    'Pronombres'
-  ];
+  List<Categoria> categorias = []; // Lista de categorías
+
+  @override
+  void initState() {
+    super.initState();
+    // Llama al método para obtener todas las categorías al iniciar la página
+    getAllCategories();
+  }
+
+  Future<void> getAllCategories() async {
+    DiccionarioController diccionarioController = DiccionarioController();
+    // Llama al método para obtener todas las categorías
+    List<Categoria> allCategories =
+        await diccionarioController.getAllCategories();
+
+    // Ordenar las categorías alfabéticamente por nombre
+    allCategories.sort((a, b) => a.nombre.compareTo(b.nombre));
+
+    setState(() {
+      categorias = allCategories;
+    });
+  }
+
   ScrollController _scrollController = ScrollController();
   int selectedButtonIndex = 0;
-
+  String categoriaSeleccionada = '';
   // Lista de colores para los botones
   List<Color> buttonColors = [
     Colors.red,
@@ -102,7 +99,7 @@ class _GlosarioPageState extends State<GlosarioPage> {
               itemCount: categorias.length,
               itemExtent: 125, // Ajusta el ancho de cada elemento del ListView
               itemBuilder: (context, index) {
-                String categoria = categorias[index];
+                String categoriaNombre = categorias[index].nombre;
                 Color buttonColor = buttonColors[index %
                     buttonColors
                         .length]; // Asigna un color de la lista en base al índice
@@ -112,14 +109,13 @@ class _GlosarioPageState extends State<GlosarioPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        selectedButtonIndex =
-                            index; // Actualiza el índice del botón seleccionado
+                        categoriaSeleccionada = categorias[index].nombre;
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: buttonColor, // Asigna el color al botón
+                      backgroundColor: buttonColor, // Asigna el color al botón
                     ),
-                    child: Text(categoria),
+                    child: Text(categoriaNombre),
                   ),
                 );
               },
@@ -128,7 +124,8 @@ class _GlosarioPageState extends State<GlosarioPage> {
           Expanded(
             child: Container(
               child: Center(
-                child: contenidoCategorias[selectedButtonIndex],
+                child:
+                    CategoriaContenido(nombreCategoria: categoriaSeleccionada),
               ),
             ),
           ),

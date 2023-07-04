@@ -26,13 +26,11 @@ class _BottomPopupState extends State<BottomPopup> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider =
-        Provider.of<UserProvider>(context); // Acceder a UserProvider
-    final progreso =
-        userProvider.user?.progreso; // Obtener el progreso del usuario
+    final userProvider = Provider.of<UserProvider>(context);
+    final progreso = userProvider.user?.progreso;
 
     return Container(
-      height: 275,
+      height: 200,
       child: Material(
         child: Column(
           children: [
@@ -44,8 +42,6 @@ class _BottomPopupState extends State<BottomPopup> {
                       itemCount: lecciones.length,
                       itemBuilder: (context, index) {
                         final leccion = lecciones[index];
-
-                        // Verificar si la lección está aprobada
                         final leccionAprobada = progreso?.leccionesCompletadas
                                 .any((leccionCompletada) =>
                                     leccionCompletada.identificador ==
@@ -54,48 +50,77 @@ class _BottomPopupState extends State<BottomPopup> {
 
                         return GestureDetector(
                           onTap: () {
-                            // Obtener la lista de preguntas de la lección
                             final preguntas = leccion.preguntas;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => LeccionPage(
-                                    preguntas: preguntas, leccion: leccion),
+                                  preguntas: preguntas,
+                                  leccion: leccion,
+                                ),
                               ),
                             );
                           },
-                          child: Container(
-                            width: 120,
-                            margin: EdgeInsets.only(right: 16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                leccion.imageUrl != null
-                                    ? Image.network(leccion.imageUrl!,
-                                        height: 100,
-                                        fit: BoxFit.cover, errorBuilder:
-                                            (context, error, stackTrace) {
-                                        return Image.asset(
-                                          'assets/images/default_image.png',
-                                          fit: BoxFit.cover,
-                                        );
-                                      })
-                                    : Container(),
-                                SizedBox(height: 8),
-                                SizedBox(height: 8),
-                                Text(
-                                  leccion.nombre,
-                                  style: TextStyle(fontSize: 14),
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: 8),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    // Acción al hacer clic en el botón de inicio
-                                  },
-                                  child: Text('Iniciar'),
-                                ),
-                              ],
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Container(
+                              width: 100,
+                              margin: EdgeInsets.only(right: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                    child: Stack(
+                                      children: [
+                                        leccion.imageUrl != null
+                                            ? Image.network(
+                                                leccion.imageUrl!,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  return Image.asset(
+                                                    'assets/images/default_image.png',
+                                                    fit: BoxFit.cover,
+                                                  );
+                                                },
+                                              )
+                                            : Container(),
+                                        if (leccionAprobada)
+                                          Positioned(
+                                            top: 8,
+                                            right: 8,
+                                            child: Icon(
+                                              Icons.check,
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    leccion.nombre,
+                                    style: TextStyle(fontSize: 14),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 8),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      final preguntas = leccion.preguntas;
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => LeccionPage(
+                                            preguntas: preguntas,
+                                            leccion: leccion,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Text('Iniciar'),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );

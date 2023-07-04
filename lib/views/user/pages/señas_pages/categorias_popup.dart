@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../models/diccionario.dart';
+import '../../../../models/palabra.dart';
 
-class WordPopup extends StatelessWidget {
-  final Diccionario word;
+class CategoriaPopup extends StatelessWidget {
+  final Palabra palabra;
 
-  const WordPopup({required this.word});
-
+  const CategoriaPopup({required this.palabra});
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        word.palabra.toUpperCase(),
+        palabra.palabra.toUpperCase(),
         textAlign: TextAlign.center, // Alinea el texto al centro
         style: TextStyle(
           fontSize: 20,
@@ -22,11 +21,11 @@ class WordPopup extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          word.senia.isNotEmpty ?
+          palabra.senia.isNotEmpty ?
                       Container(
               alignment: Alignment.center,
               child: Image.network(
-                word.senia, 
+                palabra.senia, 
                 width: 200,
                 height: 200,
               ),
