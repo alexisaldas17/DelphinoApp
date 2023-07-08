@@ -20,7 +20,7 @@ class _EditarPalabraState extends State<EditarPalabra> {
   late TextEditingController _palabraController;
   late TextEditingController _categoriaController;
   late TextEditingController _descripcionController;
-  PlatformFile _video = PlatformFile(name: '', size: 0);
+  File _video =File('');
   File _imagen = File('');
 
   String? _imageUrl;
@@ -384,7 +384,7 @@ class _EditarPalabraState extends State<EditarPalabra> {
     bool ingresado = await palabrasController.actualizarPalabra(
       uid,
       palabra,
-      isNewVideo ? _video : PlatformFile(name: '', size: 0),
+      isNewVideo ? _video : File(''),
       isNewImage ? _imagen : File(''),
       descripcion,
     );
@@ -460,23 +460,18 @@ class _EditarPalabraState extends State<EditarPalabra> {
 
 //METODO PARA CARGAR EL NUEVO VIDEO
   void _pickVideo() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['gif'],
-    );
+     final ImagePicker _picker = ImagePicker();
+    XFile? pickedVideo = await _picker.pickImage(source: ImageSource.gallery);
 
-    if (result != null && result.files.isNotEmpty) {
-      String filePath = result.files.first.path!;
-      PlatformFile videoFile = result.files.first;
+    if (pickedVideo != null) {
+      File videoFile = File(pickedVideo.path);
       setState(() {
-        _urlVideoBorrar = _videoUrl;
-        _videoCambiado = true;
-        _newVideoUrl = filePath;
+        _videoUrl = pickedVideo.path!;
         _video = videoFile;
-        _videoUrl = null;
         _videoError = false;
       });
     }
+    
   }
 
   void _eliminarPalabra() {

@@ -1,10 +1,8 @@
-import 'package:delphino_app/views/auth_screens/loginEstudiante_screen.dart';
 import 'package:delphino_app/views/auth_screens/loginAdmin_screen.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../controllers/auth_controller.dart';
-import 'home_screen.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -14,7 +12,7 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-    final FluroRouter router = FluroRouter();
+  final FluroRouter router = FluroRouter();
   List<String> carouselImages = [
     'assets/welcome1.png',
     'assets/welcome2.png',
@@ -54,7 +52,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
-                  fontFamily: 'Roboto',
+                  fontFamily: 'NunitoSans_7pt',
                   letterSpacing: 1.5,
                   shadows: [
                     Shadow(
@@ -95,12 +93,8 @@ class _WelcomePageState extends State<WelcomePage> {
 
                   // ignore: unnecessary_null_comparison
                   if (userCredential != null) {
-                   
-                    Navigator.pushReplacementNamed(
-                      context,'/home'
-                     
-                    );
-                    
+                    Navigator.pushReplacementNamed(context, '/home');
+
                     // Realiza las acciones necesarias con los datos del usuario
                   } else {
                     // Error en el inicio de sesión
@@ -118,48 +112,56 @@ class _WelcomePageState extends State<WelcomePage> {
                 },
                 icon: Image.asset(
                   'assets/google_logo.png',
-                  height: 24,
-                  width: 24,
+                  height: 25,
+                  width: 25,
                 ),
-                label: Text('Ingresar con Google'),
+                label: Text(
+                  'Ingresar con Google',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(25),
                   ),
                   padding: EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
               SizedBox(height: 8.0),
-              ElevatedButton.icon(
-                
-                onPressed: () {
-              
-               router.navigateTo(context, '/protected', transition: TransitionType.fadeIn);
-                  // Navigator.pushReplacement(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (BuildContext context) => LoginAdmin(),
-                  //   ),
-                  // );
-                },
-                icon: Image.asset(
-                  'assets/apple_iphone.png',
-                  width: 24,
-                  height: 24,
-                ),
-                label: Text('Ingresar con Apple ID'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                ),
-              ),
-              SizedBox(height: 8.0),
+              // ElevatedButton.icon(
+              //   onPressed: () async {
+              //     final authService = AuthController();
+              //     final userCredential =
+              //         await authService.signInWithApple().then((value) {
+              //       print(value);
+              //     }).catchError((error) {
+              //       print(error);
+              //     });
+              //   },
+              //   icon: Image.asset(
+              //     'assets/apple_iphone.png',
+              //     width: 24,
+              //     height: 24,
+              //   ),
+              //   label: Text(
+              //     'Ingresar con Apple ID',
+              //     style: TextStyle(
+              //       fontSize: 18,
+              //     ),
+              //   ),
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor: Colors.black,
+              //     foregroundColor: Colors.white,
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(8),
+              //     ),
+              //     padding: EdgeInsets.symmetric(vertical: 12),
+              //   ),
+              // ),
+              // SizedBox(height: 8.0),
               GestureDetector(
                 onTap: () {
                   // Lógica para dirigirse a una nueva página al hacer clic

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delphino_app/views/word_popup.dart';
 import 'package:flutter/material.dart';
@@ -218,8 +219,11 @@ class _SeniasPageState extends State<SeniasPage>
     );
   }
 
-  Future<void> _loadImage(String imageUrl) async {
-    // Simular la carga de la imagen con un delay de 2 segundos
-    await Future.delayed(Duration(seconds: 0));
+  // Future<void> _loadImage(String imageUrl) async {
+  //   // Simular la carga de la imagen con un delay de 0 segundos
+  //   await Future.delayed(Duration(seconds: 1));
+  // }
+  Future<ImageProvider> _loadImage(String imageUrl) async {
+    return CachedNetworkImageProvider(imageUrl);
   }
 }

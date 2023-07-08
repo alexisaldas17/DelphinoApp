@@ -1,3 +1,4 @@
+import 'package:delphino_app/providers/user.provider.dart';
 import 'package:flutter/material.dart';
 import '../../../controllers/aprender_controller.dart';
 
@@ -37,8 +38,8 @@ class AprenderProvider with ChangeNotifier {
     }
   }
 
-  bool todasLeccionesCompletadas(
-      Subnivel subnivel, List<Leccion> leccionesCompletadas,int currentNivelIndex) {
+  bool todasLeccionesCompletadas(Subnivel subnivel,
+      List<Leccion> leccionesCompletadas, int currentNivelIndex) {
     List<Leccion> leccionesSubnivel = subnivel.lecciones;
 
     for (var leccion in leccionesSubnivel) {
@@ -55,6 +56,8 @@ class AprenderProvider with ChangeNotifier {
       // Obtener el siguiente subnivel de la lista
       Subnivel siguienteSubnivel =
           niveles![currentNivelIndex].subniveles[currentIndex + 1];
+      UserProvider userProvider = UserProvider();
+      userProvider.completarSubnivel(subnivel);
 
       // Asignar el valor de subnivelAprobado = true al siguiente subnivel
       siguienteSubnivel.subnivelAprobado = true;

@@ -12,4 +12,9 @@ class Nivel {
     required this.nombre,
     required this.subniveles,
   });
+    Nivel.empty()
+      : id = 0,
+        nombre = '',
+        subniveles = [],
+        aprobado = false;
 }

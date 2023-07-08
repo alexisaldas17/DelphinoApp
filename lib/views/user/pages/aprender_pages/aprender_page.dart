@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import 'lecciones_popup.dart';
 
-
 class AprenderPage extends StatefulWidget {
   const AprenderPage({Key? key}) : super(key: key);
 
@@ -27,6 +26,8 @@ class _AprenderPageState extends State<AprenderPage> {
     // Acceder a la variable user de UserProvider
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
+
+    final progreso = userProvider.user?.progreso;
     final user = userProvider.user;
     return Scaffold(
       appBar: AppBar(
@@ -87,10 +88,12 @@ class _AprenderPageState extends State<AprenderPage> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: nivel.subniveles.map((subnivel) {
-                      final bool? subnivelAprobado = subnivel.subnivelAprobado;
-                      final bool todasLeccionesCompletas =
-                          provider.todasLeccionesCompletadas(subnivel,
-                              user!.progreso!.leccionesCompletadas, index);
+                      // final subnivelAprobado = subnivel.subnivelAprobado;
+                      final subnivelAprobado = progreso?.subnivelesCompletados
+                              .any((subnivelCompletado) =>
+                                  subnivelCompletado.nombre ==
+                                  subnivel.nombre) ??
+                          false;
 
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -106,18 +109,43 @@ class _AprenderPageState extends State<AprenderPage> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Subnivel no aprobado'),
-                                    content: Text(
-                                        'Este subnivel no está aprobado. Completa los requisitos previos para desbloquearlo.'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text('Cerrar'),
+                                  return Dialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.warning,
+                                            color: Colors.orange,
+                                            size: 48,
+                                          ),
+                                          SizedBox(height: 16),
+                                          Text(
+                                            'Subnivel no aprobado',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text(
+                                            'Este subnivel no está aprobado. Completa los requisitos previos para desbloquearlo.',
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 16),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('Cerrar'),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   );
                                 },
                               );
@@ -156,6 +184,7 @@ class _AprenderPageState extends State<AprenderPage> {
                               Text(
                                 subnivel.nombre ?? '',
                                 style: TextStyle(
+                                  fontSize: 17,
                                   color: subnivelAprobado == true
                                       ? Colors.black
                                       : Colors.grey,

@@ -128,21 +128,21 @@ class AuthController with ChangeNotifier {
             final Map<String, dynamic> userData =
                 updatedUserSnapshot.data() as Map<String, dynamic>;
 
-            final aprenderProvider =
-                Provider.of<AprenderProvider>(context, listen: false);
+            // final aprenderProvider =
+            //     Provider.of<AprenderProvider>(context, listen: false);
 
-            for (final subnivelCompletado in subnivelesCompletados) {
-              final int subnivelId = subnivelCompletado.id;
-              final Subnivel? subnivel = aprenderProvider.niveles
-                  ?.expand((nivel) => nivel.subniveles)
-                  .firstWhere((subnivel) => subnivel.id == subnivelId,
-                      orElse: () =>
-                          Subnivel(id: 0, lecciones: [], urlImage: ''));
+            // for (final subnivelCompletado in subnivelesCompletados) {
+            //   final int subnivelId = subnivelCompletado.id;
+            //   final Subnivel? subnivel = aprenderProvider.niveles
+            //       ?.expand((nivel) => nivel.subniveles)
+            //       .firstWhere((subnivel) => subnivel.id == subnivelId,
+            //           orElse: () =>
+            //               Subnivel(id: 0, lecciones: [], urlImage: ''));
 
-              if (subnivel != null) {
-                subnivel.subnivelAprobado = true;
-              }
-            }
+            //   if (subnivel != null) {
+            //     subnivel.subnivelAprobado = true;
+            //   }
+            // }
 
             // Mapear los datos del documento en un objeto Usuario
             Usuario usuario = Usuario(
@@ -216,51 +216,7 @@ class AuthController with ChangeNotifier {
     }
   }
 
-  // Future<UserCredential?> signIn(
-  //     BuildContext context, String email, String password) async {
-  //   try {
-  //     UserCredential userCredential =
-  //         await _firebaseAuth.signInWithEmailAndPassword(
-  //       email: email,
-  //       password: password,
-  //     );
-
-  //     // Obtener el documento del usuario utilizando Firestore
-  //     DocumentSnapshot userDocument = await FirebaseFirestore.instance
-  //         .collection('usuarios')
-  //         .doc(userCredential.user!.uid)
-  //         .get();
-
-  //     // Aquí puedes acceder a los datos del documento del usuario
-  //     if (userDocument.exists) {
-  //       Map<String, dynamic> userData =
-  //           userDocument.data() as Map<String, dynamic>;
-  //       // Hacer algo con los datos del usuario
-  //       // Mapear los datos del documento en un objeto Usuario
-  //       Usuario usuario = Usuario(
-  //         nombre: userData['nombre'] ?? '',
-  //         uid: userData['id'] ?? '',
-  //         email: userData['email'] ?? '',
-  //         rol: userData['rol'] ?? '',
-  //       );
-
-  //       final UserProvider userProvider =
-  //           Provider.of<UserProvider>(context, listen: false);
-  //       userProvider.setUser(usuario);
-  //       print('Datos del usuario: $userData');
-  //     } else {
-  //       // El documento del usuario no existe
-  //       print('El documento del usuario no existe');
-  //     }
-
-  //     return userCredential;
-  //   } catch (e) {
-  //     // Manejo de errores
-  //     print('Error durante el inicio de sesión: $e');
-  //     return null;
-  //   }
-  // }
-
+ 
   Future<void> signOut() async {
     try {
       // Cerrar sesión en Firebase

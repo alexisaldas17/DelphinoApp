@@ -21,22 +21,34 @@ class CategoriaPopup extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          palabra.senia.isNotEmpty ?
-                      Container(
-              alignment: Alignment.center,
-              child: Image.network(
-                palabra.senia, 
-                width: 200,
-                height: 200,
-              ),
-            ):
-             Container(
-              alignment: Alignment.center,
-              child: Icon(
-                Icons.videocam_off,
-                size: 200,
-              ),
-            ),
+          palabra.senia.isNotEmpty
+              ? Container(
+                  alignment: Alignment.center,
+                  child: Image.network(
+                    palabra.senia,
+                    width: 200,
+                    height: 200,
+                    frameBuilder: (BuildContext context, Widget child,
+                        int? frame, bool wasSynchronouslyLoaded) {
+                      if (wasSynchronouslyLoaded) {
+                        return child;
+                      }
+                      return AnimatedOpacity(
+                        child: child,
+                        opacity: frame == null ? 0 : 1,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeOut,
+                      );
+                    },
+                  ),
+                )
+              : Container(
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.videocam_off,
+                    size: 200,
+                  ),
+                ),
         ],
       ),
       actions: [

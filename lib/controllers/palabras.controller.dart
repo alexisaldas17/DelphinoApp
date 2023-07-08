@@ -68,7 +68,7 @@ class PalabrasController {
   }
 
   Future<bool> actualizarPalabra(String uid, String palabra,
-      PlatformFile videoPath, File imagePath, String descripcion) async {
+      File videoPath, File imagePath, String descripcion) async {
     String imagenUrl = '';
     String videoUrl = '';
 
@@ -128,7 +128,7 @@ class PalabrasController {
   }
 
   Future<bool> agregarPalabra(String palabra, String categoria,
-      PlatformFile videoPath, File imagePath, String descripcion) async {
+      File videoPath, File imagePath, String descripcion) async {
     try {
       String imagenUrl = await guardarImagen(imagePath);
       String videoUrl = await guardarVideo(videoPath);
@@ -186,7 +186,7 @@ class PalabrasController {
     }
   }
 
-  Future<String> guardarVideo(PlatformFile videoFile) async {
+  Future<String> guardarVideo(File videoFile) async {
     try {
       // Generar un nombre único para el archivo
       String fileName = DateTime.now().millisecondsSinceEpoch.toString();

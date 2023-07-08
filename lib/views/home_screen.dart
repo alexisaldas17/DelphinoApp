@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.gamepad),
-            label: 'Juegos y más',
+            label: 'Juegos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

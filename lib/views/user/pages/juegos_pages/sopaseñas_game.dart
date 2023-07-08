@@ -25,7 +25,7 @@ class _SopaDeSenasPageState extends State<SopaDeSenasPage> {
     generarMatriz();
   }
 
-  void generarMatriz() {
+void generarMatriz() {
   matriz = List.generate(dimension, (i) => List.generate(dimension, (j) => '', growable: false));
 
   final Random random = Random();
@@ -38,10 +38,14 @@ class _SopaDeSenasPageState extends State<SopaDeSenasPage> {
     }
   }
 
+  palabrasPredefinidas.shuffle(); // Mezcla las palabras predefinidas para insertarlas en un orden aleatorio
+
   for (String palabra in palabrasPredefinidas) {
     bool insertada = false;
+    int intentos = 0;
+    final int maxIntentos = 100; // Establece un límite máximo de intentos
 
-    while (!insertada) {
+    while (!insertada && intentos < maxIntentos) { // Agrega la condición intentos < maxIntentos al bucle
       int fila = random.nextInt(dimension);
       int columna = random.nextInt(dimension);
       bool horizontal = random.nextBool();
@@ -50,9 +54,12 @@ class _SopaDeSenasPageState extends State<SopaDeSenasPage> {
         insertarPalabra(palabra, fila, columna, horizontal);
         insertada = true;
       }
+
+      intentos++;
     }
   }
 }
+
 
 String generarLetraAleatoria(Random random) {
   final int codigoBase = 'A'.codeUnitAt(0);

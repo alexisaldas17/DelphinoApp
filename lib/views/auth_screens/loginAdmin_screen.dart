@@ -40,14 +40,13 @@ class _LoginAdminState extends State<LoginAdmin> {
     super.dispose();
   }
 
-
+  //METODO DE INICIO DE SESION PARA EL USUARIO ADMINISTRADOR.
   Future<void> _login() async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Aquí puedes realizar alguna acción después del inicio de sesión exitoso
       if (userCredential != null) {
         print('Inicio de sesión exitoso: ${userCredential.user?.uid}');
         // Mostrar mensaje al usuario
@@ -94,7 +93,6 @@ class _LoginAdminState extends State<LoginAdmin> {
         );
         print('Contraseña incorrecta');
       }
-      // Aquí puedes mostrar un mensaje de error al usuario
       print(e);
     }
   }

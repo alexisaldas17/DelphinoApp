@@ -19,7 +19,7 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
   File _imagen = File('');
   String _videoPath = '';
   String _word = '';
-  PlatformFile _video = PlatformFile(name: '', size: 0);
+  File _video = File('');
   TextEditingController _wordController = TextEditingController();
   PalabrasController palabrasController = PalabrasController();
   TextEditingController _descripcionController = TextEditingController();
@@ -74,20 +74,32 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
 
   // METODO PARA CARGAR EL VIDEO EN FORMATO .gif
   Future<void> _selectVideo() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['gif'],
-    );
+       final ImagePicker _picker = ImagePicker();
+    XFile? pickedVideo = await _picker.pickImage(source: ImageSource.gallery);
 
-    if (result != null && result.files.isNotEmpty) {
-      String filePath = result.files.first.path!;
-      PlatformFile videoFile = result.files.first;
+    if (pickedVideo != null) {
+      File videoFile = File(pickedVideo.path);
       setState(() {
-        _videoPath = filePath;
+        _videoPath = pickedVideo.path!;
         _video = videoFile;
         _videoError = false;
       });
     }
+
+    // FilePickerResult? result = await FilePicker.platform.pickFiles(
+    //   type: FileType.custom,
+    //   allowedExtensions: ['gif'],
+    // );
+
+    // if (result != null && result.files.isNotEmpty) {
+    //   String filePath = result.files.first.path!;
+    //   PlatformFile videoFile = result.files.first;
+    //   setState(() {
+    //     _videoPath = filePath;
+    //     _video = videoFile;
+    //     _videoError = false;
+    //   });
+    
   }
 
   Future<void> _saveWord() async {
@@ -96,13 +108,15 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
     // Validar si los campos obligatorios están completos
     if (palabra.isEmpty ||
         _selectedCategory.isEmpty ||
-        _videoPath.isEmpty ||
-        _imagePath.isEmpty) {
+        _videoPath.isEmpty 
+        // ||
+        // _imagePath.isEmpty
+        ) {
       setState(() {
         _palabraError = palabra.isEmpty;
         _categoriaError = _selectedCategory.isEmpty;
         _videoError = _videoPath.isEmpty;
-        _imageError = _imagePath.isEmpty;
+        //_imageError = _imagePath.isEmpty;
       });
       showDialog(
         context: context,
@@ -150,7 +164,7 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
       palabra,
       _selectedCategory.toLowerCase(),
       _video,
-      _imagen,
+      _imagePath.isNotEmpty ? _imagen :File(''),
       descripcion,
     );
 

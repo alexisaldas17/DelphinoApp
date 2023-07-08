@@ -98,67 +98,67 @@ class _HomeAdministradorState extends State<HomeAdministrador> {
                       ),
                     ],
                   ),
-                  ExpansionTile(
-                    title: Text('Gestionar Glosario'),
-                    children: [
-                      ListTile(
-                        title: Text('Categoria ABC'),
-                        onTap: () {
-                          // Lógica para manejar la selección de la subopción 1
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ListTile(
-                        title: Text('Categoria Números'),
-                        onTap: () {
-                          // Lógica para manejar la selección de la subopción 2
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ListTile(
-                        title: Text('Categoria Colores'),
-                        onTap: () {
-                          // Lógica para manejar la selección de la subopción 2
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ListTile(
-                        title: Text('Categoria Animales'),
-                        onTap: () {
-                          // Lógica para manejar la selección de la subopción 2
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ListTile(
-                        title: Text('Categoria Frutas'),
-                        onTap: () {
-                          // Lógica para manejar la selección de la subopción 2
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ListTile(
-                        title: Text('Categoria Objetos'),
-                        onTap: () {
-                          // Lógica para manejar la selección de la subopción 2
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ListTile(
-                        title: Text('Categoria Días'),
-                        onTap: () {
-                          // Lógica para manejar la selección de la subopción 2
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ListTile(
-                        title: Text('Categoria Meses'),
-                        onTap: () {
-                          // Lógica para manejar la selección de la subopción 2
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  ),
+                  // ExpansionTile(
+                  //   title: Text('Gestionar Glosario'),
+                  //   children: [
+                  //     ListTile(
+                  //       title: Text('Categoria ABC'),
+                  //       onTap: () {
+                  //         // Lógica para manejar la selección de la subopción 1
+                  //         Navigator.pop(context);
+                  //       },
+                  //     ),
+                  //     ListTile(
+                  //       title: Text('Categoria Números'),
+                  //       onTap: () {
+                  //         // Lógica para manejar la selección de la subopción 2
+                  //         Navigator.pop(context);
+                  //       },
+                  //     ),
+                  //     ListTile(
+                  //       title: Text('Categoria Colores'),
+                  //       onTap: () {
+                  //         // Lógica para manejar la selección de la subopción 2
+                  //         Navigator.pop(context);
+                  //       },
+                  //     ),
+                  //     ListTile(
+                  //       title: Text('Categoria Animales'),
+                  //       onTap: () {
+                  //         // Lógica para manejar la selección de la subopción 2
+                  //         Navigator.pop(context);
+                  //       },
+                  //     ),
+                  //     ListTile(
+                  //       title: Text('Categoria Frutas'),
+                  //       onTap: () {
+                  //         // Lógica para manejar la selección de la subopción 2
+                  //         Navigator.pop(context);
+                  //       },
+                  //     ),
+                  //     ListTile(
+                  //       title: Text('Categoria Objetos'),
+                  //       onTap: () {
+                  //         // Lógica para manejar la selección de la subopción 2
+                  //         Navigator.pop(context);
+                  //       },
+                  //     ),
+                  //     ListTile(
+                  //       title: Text('Categoria Días'),
+                  //       onTap: () {
+                  //         // Lógica para manejar la selección de la subopción 2
+                  //         Navigator.pop(context);
+                  //       },
+                  //     ),
+                  //     ListTile(
+                  //       title: Text('Categoria Meses'),
+                  //       onTap: () {
+                  //         // Lógica para manejar la selección de la subopción 2
+                  //         Navigator.pop(context);
+                  //       },
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
@@ -179,22 +179,58 @@ class _HomeAdministradorState extends State<HomeAdministrador> {
           ],
         ),
       ),
-      body: Builder(
-        builder: (BuildContext context) {
-          return Container(
-            child: GestureDetector(
-              onTap: () {
-                if (_isDrawerOpen) {
-                  Scaffold.of(context).openEndDrawer();
-                }
-              },
-              child: Center(
-                child: Text('Contenido principal'),
-              ),
-            ),
-          );
+ body: Builder(
+  builder: (BuildContext context) {
+    return Container(
+      child: GestureDetector(
+        onTap: () {
+          if (_isDrawerOpen) {
+            Scaffold.of(context).openEndDrawer();
+          }
         },
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  // Acción del primer botón
+                },
+                icon: Icon(Icons.add),
+                label: Text('AGREGAR PALABRA'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  // Acción del segundo botón
+                },
+                icon: Icon(Icons.edit),
+                label: Text('EDITAR PALABRA'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  // Acción del tercer botón
+                },
+                icon: Icon(Icons.delete),
+                label: Text('BORRAR PALABRA'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
+    );
+  },
+),
+
+
     );
   }
 }

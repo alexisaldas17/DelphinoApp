@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
+
     sdk: flutter
   firebase_core: ^2.13.0
   firebase_auth: ^4.6.1
@@ -43,6 +44,8 @@ dependencies:
   image_picker: ^0.8.4+4
   animated_text_kit: ^4.2.2
   carousel_slider: ^4.2.1
+  cached_network_image: ^3.2.0
+  tutorial_coach_mark: ^1.2.9
  
 
 
@@ -79,6 +82,7 @@ flutter_native_splash:
 flutter:
   assets:
    - assets/google_logo.png
+   - assets/balloons.png
    - assets/images/default_image.png
    - assets/splash.jpg
    - assets/welcome1.png
@@ -175,17 +179,19 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+  fonts:
+    - family: NunitoSans_7pt
+      fonts:
+        - asset: fonts/NunitoSans_7pt-Regular.ttf
+        - asset: fonts/NunitoSans_7pt-Light.ttf
+        - asset: fonts/NunitoSans_7pt-Bold.ttf
+          weight: 700
   #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto-Light.ttf
+        - asset: fonts/Roboto-Bold.ttf
+          weight: 700
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
