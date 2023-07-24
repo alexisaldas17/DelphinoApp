@@ -1,5 +1,4 @@
 import 'package:delphino_app/controllers/auth_controller.dart';
-import 'package:delphino_app/views/auth_screens/loginAdmin_screen.dart';
 import 'package:delphino_app/views/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -47,18 +46,27 @@ class _HomeAdministradorState extends State<HomeAdministrador> {
                     decoration: BoxDecoration(
                       color: Colors.blue,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Menú',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: AssetImage(
+                                'assets/perfil.png'), // Reemplaza 'ruta_de_la_imagen' con la ruta de la imagen de administrador
+                            radius:
+                                30, // Ajusta el tamaño del círculo de la imagen
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                              height: 8), // Espacio entre la imagen y el texto
+                          Text(
+                            'Administrador',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   ExpansionTile(
@@ -77,7 +85,7 @@ class _HomeAdministradorState extends State<HomeAdministrador> {
                         },
                       ),
                       ListTile(
-                        title: Text('Editar Palabra'),
+                        title: Text('Actualizar Palabra'),
                         onTap: () {
                           Navigator.pop(context);
 
@@ -89,76 +97,15 @@ class _HomeAdministradorState extends State<HomeAdministrador> {
                           );
                         },
                       ),
-                      ListTile(
-                        title: Text('Borrar Palabra'),
-                        onTap: () {
-                          // Lógica para manejar la selección de la subopción 2
-                          Navigator.pop(context);
-                        },
-                      ),
+                      // ListTile(
+                      //   title: Text('Borrar Palabra'),
+                      //   onTap: () {
+                      //     // Lógica para manejar la selección de la subopción 2
+                      //     Navigator.pop(context);
+                      //   },
+                      // ),
                     ],
                   ),
-                  // ExpansionTile(
-                  //   title: Text('Gestionar Glosario'),
-                  //   children: [
-                  //     ListTile(
-                  //       title: Text('Categoria ABC'),
-                  //       onTap: () {
-                  //         // Lógica para manejar la selección de la subopción 1
-                  //         Navigator.pop(context);
-                  //       },
-                  //     ),
-                  //     ListTile(
-                  //       title: Text('Categoria Números'),
-                  //       onTap: () {
-                  //         // Lógica para manejar la selección de la subopción 2
-                  //         Navigator.pop(context);
-                  //       },
-                  //     ),
-                  //     ListTile(
-                  //       title: Text('Categoria Colores'),
-                  //       onTap: () {
-                  //         // Lógica para manejar la selección de la subopción 2
-                  //         Navigator.pop(context);
-                  //       },
-                  //     ),
-                  //     ListTile(
-                  //       title: Text('Categoria Animales'),
-                  //       onTap: () {
-                  //         // Lógica para manejar la selección de la subopción 2
-                  //         Navigator.pop(context);
-                  //       },
-                  //     ),
-                  //     ListTile(
-                  //       title: Text('Categoria Frutas'),
-                  //       onTap: () {
-                  //         // Lógica para manejar la selección de la subopción 2
-                  //         Navigator.pop(context);
-                  //       },
-                  //     ),
-                  //     ListTile(
-                  //       title: Text('Categoria Objetos'),
-                  //       onTap: () {
-                  //         // Lógica para manejar la selección de la subopción 2
-                  //         Navigator.pop(context);
-                  //       },
-                  //     ),
-                  //     ListTile(
-                  //       title: Text('Categoria Días'),
-                  //       onTap: () {
-                  //         // Lógica para manejar la selección de la subopción 2
-                  //         Navigator.pop(context);
-                  //       },
-                  //     ),
-                  //     ListTile(
-                  //       title: Text('Categoria Meses'),
-                  //       onTap: () {
-                  //         // Lógica para manejar la selección de la subopción 2
-                  //         Navigator.pop(context);
-                  //       },
-                  //     ),
-                  //   ],
-                  // ),
                 ],
               ),
             ),
@@ -179,58 +126,74 @@ class _HomeAdministradorState extends State<HomeAdministrador> {
           ],
         ),
       ),
- body: Builder(
-  builder: (BuildContext context) {
-    return Container(
-      child: GestureDetector(
-        onTap: () {
-          if (_isDrawerOpen) {
-            Scaffold.of(context).openEndDrawer();
-          }
+      body: Builder(
+        builder: (BuildContext context) {
+          return Container(
+            child: GestureDetector(
+              onTap: () {
+                if (_isDrawerOpen) {
+                  Scaffold.of(context).openEndDrawer();
+                }
+              },
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        // Acción del primer botón
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AgregarPalabra()),
+                        );
+                      },
+                      icon: Icon(Icons.add),
+                      label: Text('AGREGAR PALABRA'),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.blue),
+                        fixedSize: MaterialStateProperty.all<Size>(Size.square(
+                            160)), // Ajusta el tamaño del botón a un cuadrado de 100x100
+                      ),
+                    ),
+                    SizedBox(height: 32),
+
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        // Acción del segundo botón
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditarDiccionario()),
+                        );
+                      },
+                      icon: Icon(Icons.edit),
+                      label: Text('ACTUALIZAR PALABRA'),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.green),
+                        fixedSize: MaterialStateProperty.all<Size>(Size.square(
+                            160)), // Ajusta el tamaño del botón a un cuadrado de 100x100
+                      ),
+                    ),
+                    // ElevatedButton.icon(
+                    //   onPressed: () {
+                    //     // Acción del tercer botón
+                    //   },
+                    //   icon: Icon(Icons.delete),
+                    //   label: Text('BORRAR PALABRA'),
+                    //   style: ButtonStyle(
+                    //     backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ),
+            ),
+          );
         },
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Acción del primer botón
-                },
-                icon: Icon(Icons.add),
-                label: Text('AGREGAR PALABRA'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                ),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Acción del segundo botón
-                },
-                icon: Icon(Icons.edit),
-                label: Text('EDITAR PALABRA'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-                ),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Acción del tercer botón
-                },
-                icon: Icon(Icons.delete),
-                label: Text('BORRAR PALABRA'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
-    );
-  },
-),
-
-
     );
   }
 }

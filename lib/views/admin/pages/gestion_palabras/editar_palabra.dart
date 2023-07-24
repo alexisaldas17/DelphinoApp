@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
 import '../../../../controllers/palabras.controller.dart';
 import '../../../../models/diccionario.dart';
 
@@ -20,7 +19,7 @@ class _EditarPalabraState extends State<EditarPalabra> {
   late TextEditingController _palabraController;
   late TextEditingController _categoriaController;
   late TextEditingController _descripcionController;
-  File _video =File('');
+  File _video = File('');
   File _imagen = File('');
 
   String? _imageUrl;
@@ -79,30 +78,31 @@ class _EditarPalabraState extends State<EditarPalabra> {
       onWillPop: () async {
         // Mostrar el diálogo de advertencia antes de la navegación hacia atrás
         bool confirmExit = await showDialog<bool>(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('¿Estás seguro?'),
-              content: Text('¿Deseas salir sin guardar los cambios?'),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Cancelar'),
-                  onPressed: () {
-                    // Cerrar el diálogo y evitar la navegación hacia atrás
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-                TextButton(
-                  child: Text('Salir'),
-                  onPressed: () {
-                    // Cerrar el diálogo y permitir la navegación hacia atrás
-                    Navigator.of(context).pop(true);
-                  },
-                ),
-              ],
-            );
-          },
-        ) ?? false;
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('¿Estás seguro?'),
+                  content: Text('¿Deseas salir sin guardar los cambios?'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Cancelar'),
+                      onPressed: () {
+                        // Cerrar el diálogo y evitar la navegación hacia atrás
+                        Navigator.of(context).pop(false);
+                      },
+                    ),
+                    TextButton(
+                      child: Text('Salir'),
+                      onPressed: () {
+                        // Cerrar el diálogo y permitir la navegación hacia atrás
+                        Navigator.of(context).pop(true);
+                      },
+                    ),
+                  ],
+                );
+              },
+            ) ??
+            false;
 
         // Retornar true si el usuario confirma la salida, de lo contrario, false
         return confirmExit ?? false;
@@ -168,6 +168,26 @@ class _EditarPalabraState extends State<EditarPalabra> {
                   ),
                   enabled: false,
                 ),
+                SizedBox(height: 16),
+
+                // DropdownButtonFormField<String>(
+                //   value: _selectedCategory,
+                //   onChanged: (newValue) {
+                //     _selectCategory(newValue!);
+                //   },
+                //   items: _categorias.map((categoria) {
+                //     return DropdownMenuItem<String>(
+                //       value: categoria.nombre,
+                //       child: Text(categoria.nombre),
+                //     );
+                //   }).toList(),
+                //   decoration: InputDecoration(
+                //     labelText: 'Categoría',
+                //     errorText: _categoriaError ? 'Campo obligatorio' : null,
+                //   ),
+                // ),
+                SizedBox(height: 16),
+
                 TextField(
                   controller: _descripcionController,
                   decoration: InputDecoration(
@@ -175,138 +195,199 @@ class _EditarPalabraState extends State<EditarPalabra> {
                   ),
                 ),
                 SizedBox(height: 16),
-                Text(
-                  'Imagen:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                _imageUrl == null && !_imagenCambiada
-                    ? Container(
-                        height: 200,
-                        width: 200,
-                        color: Colors
-                            .grey, // Color de fondo para la imagen por defecto
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.image,
-                              color: Colors.white,
-                              size: 100,
-                            ),
-                            Text(
-                              'Imagen no disponible',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Imagen:',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8),
+                          _imageUrl == null && !_imagenCambiada
+                              ? Container(
+                                  height: 200,
+                                  width: 200,
+                                  color: Colors.grey,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.image,
+                                        color: Colors.white,
+                                        size: 100,
+                                      ),
+                                      Text(
+                                        'Imagen no disponible',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : _imageUrl != null
+                                  ? Image.network(
+                                      _imageUrl!,
+                                      width: 150,
+                                      height: 150,
+                                      fit: BoxFit.cover,
+                                      alignment: Alignment.center,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Icon(
+                                          Icons.image_not_supported,
+                                          size: 150,
+                                          color: Colors.grey,
+                                        );
+                                      },
+                                    )
+                                  : _newImageUrl != null &&
+                                          _newImageUrl!.isNotEmpty &&
+                                          File(_newImageUrl!).existsSync() &&
+                                          _imagenCambiada
+                                      ? Image.file(
+                                          File(_newImageUrl!),
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                          alignment: Alignment.center,
+                                        )
+                                      : _newImageUrl != null &&
+                                              _newImageUrl!.isNotEmpty
+                                          ? Image.asset(
+                                              _newImageUrl!,
+                                              height: 200,
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.center,
+                                            )
+                                          : SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: _pickImage,
+                            child: Text('Cambiar Imagen (PNG)'),
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.black54),
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.white),
+                              textStyle: MaterialStateProperty.all<TextStyle>(
+                                TextStyle(fontSize: 16),
+                              ),
+                              padding:
+                                  MaterialStateProperty.all<EdgeInsetsGeometry>(
+                                EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 24),
+                              ),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                             ),
-                          ],
-                        ),
-                      )
-                    : _imageUrl != null
-                        ? Image.network(
-                            _imageUrl!,
-                            width: 150,
-                            height: 150,
-                            fit: BoxFit.cover,
-                            alignment: Alignment.center,
-                            errorBuilder: (context, error, stackTrace) {
-                              // Manejar el error 404 aquí
-                              return Icon(
-                                Icons
-                                    .image_not_supported, // Icono de imagen no disponible
-                                size: 150,
-                                color: Colors.grey, // Color del icono
-                              );
-                            },
-                          )
-                        : _newImageUrl != null &&
-                                _newImageUrl!.isNotEmpty &&
-                                File(_newImageUrl!).existsSync() &&
-                                _imagenCambiada
-                            ? Image.file(
-                                File(_newImageUrl!),
-                                height: 200,
-                                fit: BoxFit.cover,
-                                alignment: Alignment.center,
-                              )
-                            : _newImageUrl != null &&
-                                    _newImageUrl!
-                                        .isNotEmpty // Agregar esta condición para evitar el error
-                                ? Image.asset(
-                                    _newImageUrl!, // Cambiar a Image.asset y proporcionar la ruta de la imagen como un recurso en la aplicación
-                                    height: 200,
-                                    fit: BoxFit.cover,
-                                    alignment: Alignment.center,
-                                  )
-                                : SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: _pickImage,
-                  child: Text('Cambiar imagen (PNG)'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors
-                        .black54, // Cambia el color de fondo del botón a rojo
-                  ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'Video Seña:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                _videoUrl == null && !_videoCambiado
-                    ? Container(
-                        height: 200,
-                        width: 200,
-                        color: Colors
-                            .grey, // Color de fondo para la imagen por defecto
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.video_call,
-                              color: Colors.white,
-                              size: 100,
-                            ),
-                            Text(
-                              'Video no disponible',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Video Seña:',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8),
+                          _videoUrl == null && !_videoCambiado
+                              ? Container(
+                                  height: 200,
+                                  width: 200,
+                                  color: Colors.grey,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.video_call,
+                                        color: Colors.white,
+                                        size: 100,
+                                      ),
+                                      Text(
+                                        'Video no disponible',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : _videoUrl != null
+                                  ? Image.network(
+                                      _videoUrl!,
+                                      width: 150,
+                                      height: 150,
+                                      fit: BoxFit.cover,
+                                      alignment: Alignment.center,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Icon(
+                                          Icons.image_not_supported,
+                                          size: 150,
+                                          color: Colors.grey,
+                                        );
+                                      },
+                                    )
+                                  : _newVideoUrl != null &&
+                                          _newVideoUrl!.isNotEmpty &&
+                                          File(_newVideoUrl!).existsSync() &&
+                                          _videoCambiado
+                                      ? Image.file(
+                                          File(_newVideoUrl!),
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                          alignment: Alignment.center,
+                                        )
+                                      : _newVideoUrl != null &&
+                                              _newVideoUrl!.isNotEmpty
+                                          ? Image.asset(
+                                              _newVideoUrl!,
+                                              height: 200,
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.center,
+                                            )
+                                          : SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: _pickVideo,
+                            child: Text('Cambiar Video (GIF)'),
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.black54),
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.white),
+                              textStyle: MaterialStateProperty.all<TextStyle>(
+                                TextStyle(fontSize: 16),
+                              ),
+                              padding:
+                                  MaterialStateProperty.all<EdgeInsetsGeometry>(
+                                EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 24),
+                              ),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                             ),
-                          ],
-                        ),
-                      )
-                    : _videoUrl != null &&
-                            _videoUrl!.isNotEmpty &&
-                            !_videoCambiado
-                        ? Image.network(
-                            _videoUrl!,
-                            width: 150,
-                            height: 150,
-                            fit: BoxFit.cover,
-                          )
-                        : _newVideoUrl != null &&
-                                _newVideoUrl!.isNotEmpty &&
-                                File(_newVideoUrl!).existsSync() &&
-                                _videoCambiado
-                            ? Image.file(
-                                File(_newVideoUrl!),
-                                height: 200,
-                                fit: BoxFit.cover,
-                              )
-                            : SizedBox(height: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
 
-                ElevatedButton(
-                  onPressed: _pickVideo,
-                  child: Text('Cambiar Video (GIF)'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors
-                        .black54, // Cambia el color de fondo del botón a rojo
-                  ),
-                ),
                 SizedBox(height: 28),
                 Padding(
                   padding: const EdgeInsets.only(top: 16.0),
@@ -460,18 +541,21 @@ class _EditarPalabraState extends State<EditarPalabra> {
 
 //METODO PARA CARGAR EL NUEVO VIDEO
   void _pickVideo() async {
-     final ImagePicker _picker = ImagePicker();
+    final ImagePicker _picker = ImagePicker();
     XFile? pickedVideo = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedVideo != null) {
       File videoFile = File(pickedVideo.path);
       setState(() {
-        _videoUrl = pickedVideo.path!;
+        _urlVideoBorrar = _videoUrl;
+        _videoCambiado = true;
+        _newVideoUrl = pickedVideo.path;
+        // _videoUrl = pickedVideo.path!;
         _video = videoFile;
+        _videoUrl = null;
         _videoError = false;
       });
     }
-    
   }
 
   void _eliminarPalabra() {

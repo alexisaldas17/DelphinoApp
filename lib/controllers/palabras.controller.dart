@@ -55,10 +55,10 @@ class PalabrasController {
   Future<bool> eliminarPalabra(
       String uid, String imagenUrl, String videoUrl) async {
     try {
-      if(imagenUrl != null && imagenUrl.isNotEmpty)
-      eliminarArchivoFirestorage(imagenUrl);
-      if(videoUrl != null && videoUrl.isNotEmpty)
-      eliminarArchivoFirestorage(videoUrl);
+      if (imagenUrl != null && imagenUrl.isNotEmpty)
+        eliminarArchivoFirestorage(imagenUrl);
+      if (videoUrl != null && videoUrl.isNotEmpty)
+        eliminarArchivoFirestorage(videoUrl);
       await palabrasCollection.doc(uid).delete();
       return true;
     } catch (error) {
@@ -67,8 +67,8 @@ class PalabrasController {
     }
   }
 
-  Future<bool> actualizarPalabra(String uid, String palabra,
-      File videoPath, File imagePath, String descripcion) async {
+  Future<bool> actualizarPalabra(String uid, String palabra, File videoPath,
+      File imagePath, String descripcion) async {
     String imagenUrl = '';
     String videoUrl = '';
 
@@ -127,22 +127,24 @@ class PalabrasController {
     }
   }
 
-  Future<bool> agregarPalabra(String palabra, String categoria,
-      File videoPath, File imagePath, String descripcion) async {
+  Future<bool> agregarPalabra(String palabra, String categoria, File videoPath,
+      File imagePath, String descripcion) async {
+    String imagenUrl = "";
     try {
-      String imagenUrl = await guardarImagen(imagePath);
+      if (imagePath.path.isNotEmpty)
+         imagenUrl = await guardarImagen(imagePath);
       String videoUrl = await guardarVideo(videoPath);
       // Convertir la primera letra a mayúscula
       palabra = palabra.substring(0, 1).toUpperCase() + palabra.substring(1);
       // bool palabraNoRepetida = await verificarPalabra(palabra)
-      if (imagenUrl.isNotEmpty && videoUrl.isNotEmpty) {
+      if (imagenUrl.isNotEmpty || videoUrl.isNotEmpty) {
         final docRef = await palabrasCollection.add({
           'palabra': palabra,
           'categoria': categoria,
           'seña': videoUrl,
           'imagen': imagenUrl,
           'descripcion': descripcion,
-          'uid': null, // Placeholder para el UID, se actualizará a continuación
+          'uid': null,
         });
 
         final uid = docRef.id; // Obtener el UID del documento creado

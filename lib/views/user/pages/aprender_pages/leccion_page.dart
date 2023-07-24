@@ -98,12 +98,13 @@ class _LeccionPageState extends State<LeccionPage> {
                 widget.subnivel, aprenderProvider.niveles);
 
             //Verificar si ya se completaron todas las lecciones
-            bool compleatado = userProvider.todasLasLeccionesDelSubnivelCompletadas(
-                widget.subnivel, nivel);
-            if(compleatado)
-            aprenderProvider.obtenerNivelesDesdeFirebase().then((result) {
-              showCompletedToast(nivel!);
-            });
+            bool compleatado =
+                userProvider.todasLasLeccionesDelSubnivelCompletadas(
+                    widget.subnivel, nivel);
+            if (compleatado)
+              aprenderProvider.obtenerNivelesDesdeFirebase().then((result) {
+                showCompletedToast(nivel!);
+              });
 
             // Ejemplo de llamada al método
             showCompletedDialog(context);
@@ -120,8 +121,8 @@ class _LeccionPageState extends State<LeccionPage> {
     late Subnivel siguienteSubnivel;
     if (nivel != null) {
       int subnivelIndex = nivel.subniveles.indexOf(widget.subnivel);
-        subnivelIndex = subnivelIndex == -1 ? 0 : subnivelIndex;
-        int siguienteSubnivelIndex = subnivelIndex + 1;
+      subnivelIndex = subnivelIndex == -1 ? 0 : subnivelIndex;
+      int siguienteSubnivelIndex = subnivelIndex + 1;
       if (siguienteSubnivelIndex < nivel.subniveles.length) {
         siguienteSubnivel = nivel.subniveles[siguienteSubnivelIndex];
       }
@@ -336,6 +337,9 @@ class _LeccionPageState extends State<LeccionPage> {
               });
             },
             style: ButtonStyle(
+              fixedSize: MaterialStateProperty.all<Size>(
+              Size.fromHeight(50), // Ajusta el tamaño deseado aquí
+            ),
               backgroundColor: selectedOptionIndex == optionIndex
                   ? MaterialStateProperty.all<Color>(Colors.black54)
                   : null,
@@ -488,49 +492,47 @@ class _LeccionPageState extends State<LeccionPage> {
                   },
                 ),
               ),
-              TextButton.icon(
+
+              // TextButton.icon(
+              //   onPressed: isConfirmButtonEnabled()
+              //       ? () {
+              //           checkAnswer(selectedOption);
+              //         }
+              //       : null,
+              //   icon: Icon(Icons.check),
+              //   label: Text(
+              //     currentPage < widget.preguntas.length - 1
+              //         ? 'CONFIRMAR'
+              //         : 'FINALIZAR',
+              //     style: TextStyle(fontSize: 20),
+              //   ),
+              //    style: ButtonStyle(
+              //     minimumSize:
+              //         MaterialStateProperty.all<Size>(Size(double.infinity, 50)),
+              //     backgroundColor:
+              //         MaterialStateProperty.all<Color>(Color.fromARGB(255, 16, 103, 174)!),
+              //   ),
+              // ),
+              SizedBox(height: 16),
+              ElevatedButton(
                 onPressed: isConfirmButtonEnabled()
                     ? () {
                         checkAnswer(selectedOption);
                       }
                     : null,
-                icon: Icon(Icons.check),
-                label: Text(
+                child: Text(
                   currentPage < widget.preguntas.length - 1
                       ? 'CONFIRMAR'
                       : 'FINALIZAR',
                   style: TextStyle(fontSize: 20),
                 ),
                 style: ButtonStyle(
-                  padding: MaterialStateProperty.all<EdgeInsets>(
-                    EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                  ),
-                  foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled)) {
-                        return Colors.grey as Color; // Explicit cast to Color
-                      }
-                      return Colors.white as Color; // Explicit cast to Color
-                    },
-                  ),
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled)) {
-                        return Colors.blueGrey
-                            as Color; // Explicit cast to Color
-                      }
-                      return Colors.blue[900]
-                          as Color; // Explicit cast to Color
-                    },
-                  ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                  minimumSize: MaterialStateProperty.all<Size>(
+                      Size(double.infinity, 50)),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue[500]!),
                 ),
               ),
-              SizedBox(height: 16),
             ],
           ),
         ),

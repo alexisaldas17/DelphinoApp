@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delphino_app/views/word_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../controllers/diccionario_controller.dart';
 import '../../../../models/diccionario.dart';
@@ -34,37 +37,40 @@ class _SeniasPageState extends State<SeniasPage>
     super.dispose();
   }
 
-  Future<void> _loadWords() async {
-    List<DocumentSnapshot<Object?>> words =
-        await _diccionarioService.getWords();
-    setState(() {
-      _allWords = words.map((snapshot) {
-        Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+  void _loadWords() {
+    _diccionarioService.getWords().then((value) {
+      List<DocumentSnapshot<Object?>> words = value;
+      setState(() {
+        _allWords = words.map((snapshot) {
+          Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
 
-        if (data != null) {
-          return Diccionario(
+          if (data != null) {
+            return Diccionario(
               id: data['id'] ?? '',
               uid: data['uid'] ?? '',
               palabra: data['palabra'] ?? '',
               senia: data['seña'] ?? '',
               imagen: data['imagen'] ?? '',
               categoria: data['categoria'] ?? '',
-              descripcion: data['descripcion'] ?? '');
-        } else {
-          // Handle the case where data is null
-          return Diccionario(
-            id: '',
-            uid: '',
-            palabra: '',
-            senia: '',
-            imagen: '',
-            categoria: '',
-          );
-        }
-      }).toList();
-      _filteredWords = _allWords;
-      _isLoading = false;
+              descripcion: data['descripcion'] ?? '',
+            );
+          } else {
+           
+            return Diccionario(
+              id: '',
+              uid: '',
+              palabra: '',
+              senia: '',
+              imagen: '',
+              categoria: '',
+            );
+          }
+        }).toList();
+        _filteredWords = _allWords;
+        _isLoading = false;
+      });
     });
+
   }
 
   void _searchWords(String keyword) {
@@ -219,11 +225,16 @@ class _SeniasPageState extends State<SeniasPage>
     );
   }
 
+  Future<void> _loadImage(String imageUrl) async {
+    // Use CachedNetworkImage to load and cache the image
+    await CachedNetworkImageProvider(imageUrl)
+        .resolve(ImageConfiguration.empty);
+  }
   // Future<void> _loadImage(String imageUrl) async {
   //   // Simular la carga de la imagen con un delay de 0 segundos
   //   await Future.delayed(Duration(seconds: 1));
   // }
-  Future<ImageProvider> _loadImage(String imageUrl) async {
-    return CachedNetworkImageProvider(imageUrl);
-  }
+  // Future<ImageProvider> _loadImage(String imageUrl) async {
+  //   return CachedNetworkImageProvider(imageUrl);
+  // }
 }

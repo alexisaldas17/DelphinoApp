@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
         //   useMaterial3 = true,
         // ),
         title: 'Delphino App',
-        home: WelcomePage(),
+        home: HomeAdministrador(),
         routes: {
          // '/': (context) => AuthGuard(child: WelcomePage()),
           '/home': (context) => AuthGuard(child: HomePage())

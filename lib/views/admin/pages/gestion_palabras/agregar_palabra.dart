@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -74,7 +73,7 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
 
   // METODO PARA CARGAR EL VIDEO EN FORMATO .gif
   Future<void> _selectVideo() async {
-       final ImagePicker _picker = ImagePicker();
+    final ImagePicker _picker = ImagePicker();
     XFile? pickedVideo = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedVideo != null) {
@@ -85,30 +84,13 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
         _videoError = false;
       });
     }
-
-    // FilePickerResult? result = await FilePicker.platform.pickFiles(
-    //   type: FileType.custom,
-    //   allowedExtensions: ['gif'],
-    // );
-
-    // if (result != null && result.files.isNotEmpty) {
-    //   String filePath = result.files.first.path!;
-    //   PlatformFile videoFile = result.files.first;
-    //   setState(() {
-    //     _videoPath = filePath;
-    //     _video = videoFile;
-    //     _videoError = false;
-    //   });
-    
   }
 
   Future<void> _saveWord() async {
     String palabra = _wordController.text;
     String descripcion = _descripcionController.text;
     // Validar si los campos obligatorios están completos
-    if (palabra.isEmpty ||
-        _selectedCategory.isEmpty ||
-        _videoPath.isEmpty 
+    if (palabra.isEmpty || _selectedCategory.isEmpty || _videoPath.isEmpty
         // ||
         // _imagePath.isEmpty
         ) {
@@ -164,7 +146,7 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
       palabra,
       _selectedCategory.toLowerCase(),
       _video,
-      _imagePath.isNotEmpty ? _imagen :File(''),
+      _imagePath.isNotEmpty ? _imagen : File(''),
       descripcion,
     );
 
@@ -258,19 +240,21 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
             children: [
               TextField(
                 decoration: InputDecoration(
-                  labelText: 'Ingresar nueva palabra',
+                  labelText: 'Ingresar nuevas palabras',
                   errorText: _palabraError ? 'Campo obligatorio' : null,
                 ),
                 controller: _wordController,
+                textInputAction: TextInputAction.done,
+                keyboardType: TextInputType
+                    .multiline, // Permite ingreso de múltiples líneas de texto
+                maxLines:
+                    null, // Puedes establecer un número mayor para limitar las líneas visibles, o null para permitir cualquier cantidad
                 inputFormatters: [
-                  FilteringTextInputFormatter.allow(
-                      RegExp(r'[a-zA-Z]')), // Solo permite letras
                   TextInputFormatter.withFunction((oldValue, newValue) {
-                    // Convierte la primera letra en mayúscula y las demás en minúscula
+                    // Convierte la primera letra de cada palabra en mayúscula y las demás en minúscula
                     if (newValue.text.isNotEmpty) {
                       return TextEditingValue(
-                        text: newValue.text.substring(0, 1).toUpperCase() +
-                            newValue.text.substring(1).toLowerCase(),
+                        text: toTitleCase(newValue.text),
                         selection: newValue.selection,
                       );
                     }
@@ -296,65 +280,108 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
                 ),
               ),
               SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _selectVideo,
-                child: Text('Cargar Video (GIF)'),
-              ),
-              SizedBox(height: 16),
-              if (_videoError)
-                Text(
-                  'Error al cargar el video',
-                  style: TextStyle(color: Colors.red),
-                )
-              else if (_videoPath != null &&
-                  _videoPath.isNotEmpty &&
-                  File(_videoPath).existsSync())
-                Image.file(
-                  File(_videoPath),
-                  height: 200,
-                  fit: BoxFit.cover,
-                )
-              else
-                Container(
-                  height: 200,
-                  width: 200,
-                  color: Colors.grey,
-                  child: Icon(
-                    Icons.video_call,
-                    color: Colors.white,
-                    size: 100,
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: _selectVideo,
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.orange, // Color de fondo del botón
+                            onPrimary:
+                                Colors.white, // Color del texto del botón
+                            textStyle: TextStyle(
+                                fontSize: 16), // Estilo del texto del botón
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 10), // Espaciado interno del botón
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  8), // Borde redondeado del botón
+                            ),
+                          ),
+                          child: Text('Cargar Video (GIF)'),
+                        ),
+                        SizedBox(height: 16),
+                        if (_videoError)
+                          Text(
+                            'Error al cargar el video',
+                            style: TextStyle(color: Colors.red),
+                          )
+                        else if (_videoPath != null &&
+                            _videoPath.isNotEmpty &&
+                            File(_videoPath).existsSync())
+                          Image.file(
+                            File(_videoPath),
+                            height: 200,
+                            fit: BoxFit.cover,
+                          )
+                        else
+                          Container(
+                            height: 200,
+                            width: 200,
+                            color: Colors.grey,
+                            child: Icon(
+                              Icons.video_call,
+                              color: Colors.white,
+                              size: 100,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _selectImage,
-                child: Text('Cargar Imagen (PNG)'),
-              ),
-              SizedBox(height: 16),
-              if (_imageError)
-                Text(
-                  'Error al cargar la imagen',
-                  style: TextStyle(color: Colors.red),
-                )
-              else if (_imagePath != null &&
-                  _imagePath.isNotEmpty &&
-                  File(_imagePath).existsSync())
-                Image.file(
-                  File(_imagePath),
-                  height: 200,
-                  fit: BoxFit.cover,
-                )
-              else
-                Container(
-                  height: 200,
-                  width: 200,
-                  color: Colors.grey,
-                  child: Icon(
-                    Icons.image,
-                    color: Colors.white,
-                    size: 100,
+                  Expanded(
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: _selectImage,
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.blue, // Color de fondo del botón
+                            onPrimary:
+                                Colors.white, // Color del texto del botón
+                            textStyle: TextStyle(
+                                fontSize: 16), // Estilo del texto del botón
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 10), // Espaciado interno del botón
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  10), // Borde redondeado del botón
+                            ),
+                          ),
+                          child: Text('Cargar Imagen (PNG)'),
+                        ),
+                        SizedBox(height: 16),
+                        if (_imageError)
+                          Text(
+                            'Error al cargar la imagen',
+                            style: TextStyle(color: Colors.red),
+                          )
+                        else if (_imagePath != null &&
+                            _imagePath.isNotEmpty &&
+                            File(_imagePath).existsSync())
+                          Image.file(
+                            File(_imagePath),
+                            height: 200,
+                            fit: BoxFit.cover,
+                          )
+                        else
+                          Container(
+                            height: 200,
+                            width: 200,
+                            color: Colors.grey,
+                            child: Icon(
+                              Icons.image,
+                              color: Colors.white,
+                              size: 100,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
+              ),
               SizedBox(height: 16),
               TextField(
                 controller: _descripcionController,
@@ -363,12 +390,30 @@ class _AgregarPalabraState extends State<AgregarPalabra> {
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _saving
-                    ? null
-                    : _saveWord, // Disable button if saving is in progress
-                child: _saving
-                    ? CircularProgressIndicator() // Show progress indicator if saving is in progress
-                    : Text('Guardar'),
+                onPressed: _saving ? null : _saveWord,
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue, // Color de fondo del botón
+                  onPrimary: Colors.white, // Color del texto del botón
+                  textStyle:
+                      TextStyle(fontSize: 16), // Estilo del texto del botón
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10), // Espaciado interno del botón
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(10), // Borde redondeado del botón
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _saving
+                        ? CircularProgressIndicator() // Mostrar indicador de progreso si el guardado está en curso
+                        : Icon(Icons.save), // Icono para el botón
+                    SizedBox(width: 8), // Espacio entre el icono y el texto
+                    Text('Guardar'),
+                  ],
+                ),
               ),
             ],
           ),

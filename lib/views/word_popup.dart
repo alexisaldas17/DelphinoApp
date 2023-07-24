@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../models/diccionario.dart';
 
@@ -12,21 +13,21 @@ class WordPopup extends StatefulWidget {
 }
 
 class _WordPopupState extends State<WordPopup> {
-  bool _isLoading = true;
+  //bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadImage();
+    // _loadImage();
   }
 
-  void _loadImage() async {
-    // Simular la carga de la imagen con una espera de 1 segundo
-    await Future.delayed(Duration(seconds: 1));
-    setState(() {
-      _isLoading = false;
-    });
-  }
+  // void _loadImage() async {
+  //   // Simular la carga de la imagen con una espera de 1 segundo
+  //   await Future.delayed(Duration(seconds: 1));
+  //   setState(() {
+  //     _isLoading = false;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -43,38 +44,32 @@ class _WordPopupState extends State<WordPopup> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _isLoading
-              ? Center(
-                  child: CircularProgressIndicator(),
+          //_isLoading
+          // ? Center(
+          //     child: CircularProgressIndicator(),
+          //   ):
+          widget.word.senia.isNotEmpty
+              ? Container( 
+                
+                  alignment: Alignment.center,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.word.senia,
+                    width: 200,
+                    height: 200,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) =>
+                            CircularProgressIndicator(
+                                value: downloadProgress.progress),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
                 )
-              : widget.word.senia.isNotEmpty
-                  ? Container(
-                      alignment: Alignment.center,
-                      child: Image.network(
-                        widget.word.senia,
-                        width: 200,
-                        height: 200,
-                           frameBuilder: (BuildContext context, Widget child,
-                        int? frame, bool wasSynchronouslyLoaded) {
-                      if (wasSynchronouslyLoaded) {
-                        return child;
-                      }
-                      return AnimatedOpacity(
-                        child: child,
-                        opacity: frame == null ? 0 : 1,
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeOut,
-                      );
-                    },
-                      ),
-                    )
-                  : Container(
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.videocam_off,
-                        size: 200,
-                      ),
-                    ),
+              : Container(
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.videocam_off,
+                    size: 200,
+                  ),
+                ),
         ],
       ),
       actions: [
